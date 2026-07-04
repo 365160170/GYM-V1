@@ -495,8 +495,12 @@ body[data-theme="light"] #toast{color:#fff}
   </section>
 
   <p class="footer-note">Tu registro se guarda en este dispositivo/navegador. Exporta antes de borrar datos del navegador.<br><b style="color:var(--red)">Versión 12 — Excel + recordatorio mensual</b></p>
-  <p style="text-align:center;margin-bottom:20px"><input type="file" id="importFile" accept=".json" style="display:none">
-  <button id="importBtn">Importar respaldo</button><button id="exportBtn">Exportar registro (JSON)</button></p>
+  <input type="file" id="importFile" accept=".json" style="display:none">
+  <div class="btn-grid">
+    <button class="action-btn" id="exportXlsBtn"><span class="ab-ic">📊</span><span class="ab-t">Exportar Excel</span><span class="ab-s">CSV para analizar</span></button>
+    <button class="action-btn" id="exportBtn"><span class="ab-ic">📤</span><span class="ab-t">Respaldo JSON</span><span class="ab-s">Para restaurar</span></button>
+    <button class="action-btn b-full" id="importBtn"><span class="ab-ic">📥</span><span class="ab-t">Importar respaldo</span><span class="ab-s">Restaura desde un JSON exportado</span></button>
+  </div>
 </div><!-- /view-guia -->
 </div>
 
@@ -864,7 +868,7 @@ function exportExcel(){
   a.click();
   showNotif("📊 Excel exportado — ábrelo con Excel o Numbers");
 }
-document.getElementById("exportXlsBtn").onclick = exportExcel;
+const _xb = document.getElementById("exportXlsBtn"); if(_xb) _xb.onclick = exportExcel;
 
 /* ------- Recordatorio de exportar a fin de mes ------- */
 (function(){
@@ -1104,7 +1108,7 @@ const swTheme = document.getElementById("swTheme");
 function syncSwitch(){ swTheme.classList.toggle("on", document.body.dataset.theme!=="light"); }
 swTheme.onclick = ()=>{ document.getElementById("themeBtn").click(); syncSwitch(); };
 document.getElementById("shExport").onclick = ()=>{ document.getElementById("exportBtn").click(); };
-document.getElementById("shXls").onclick = ()=>{ exportExcel(); };
+const _sx = document.getElementById("shXls"); if(_sx) _sx.onclick = ()=>exportExcel();
 document.getElementById("shImport").onclick = ()=>{ closeSheet(); document.getElementById("importBtn").click(); };
 
 /* ------- Navegación por apartados ------- */
