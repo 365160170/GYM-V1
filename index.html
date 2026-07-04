@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="DUP Diego">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="theme-color" content="#000000">
-<title>Diego Díaz de León — Full Body DUP · v10</title>
+<title>Diego Díaz de León — Full Body DUP · v11</title>
 <style>
 :root{
   --bg:#000000; --card:#1C1C1E; --card2:#2C2C2E; --fill:#3A3A3C;
@@ -232,6 +232,34 @@ header h1{transition:font-size .25s ease}
 #gearBtn:active{transform:scale(.9) rotate(30deg)}
 header.compact #gearBtn, header.compact #themeBtn{top:calc(6px + env(safe-area-inset-top));width:32px;height:32px;font-size:14px}
 
+
+/* ===== Perfil en header ===== */
+.profile-row{display:flex;align-items:center;gap:11px;margin-bottom:14px;padding-right:96px}
+.avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#FF6B61,#C2262E);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;letter-spacing:.02em;flex:0 0 auto;box-shadow:0 3px 12px rgba(230,57,70,.35)}
+.profile-txt{display:flex;flex-direction:column;min-width:0}
+.p-name{font-size:14px;font-weight:700;letter-spacing:-.01em}
+.p-greet{font-size:12.5px;color:var(--label2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header.compact .profile-row{display:none}
+/* ===== Biblioteca de ejercicios ===== */
+.lib-group{background:var(--card);border-radius:var(--r-md);margin-bottom:8px;overflow:hidden}
+.lib-group summary{padding:14px 16px;cursor:pointer;font-weight:700;font-size:15.5px;list-style:none;display:flex;align-items:center;gap:10px;position:relative}
+.lib-group summary::-webkit-details-marker{display:none}
+.lib-group summary::before{content:"";width:8px;height:8px;border-right:2px solid var(--label3);border-bottom:2px solid var(--label3);transform:rotate(-45deg);position:absolute;right:18px;transition:transform .2s}
+.lib-group[open] summary::before{transform:rotate(45deg)}
+.lib-ic{font-size:19px}
+.lib-count{margin-left:auto;margin-right:26px;font-size:12px;font-weight:600;color:var(--label3)}
+.lib-item{padding:12px 16px;border-top:.5px solid var(--sep)}
+.lib-item .li-name{font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge-prog{font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:rgba(255,69,58,.15);color:var(--red);border-radius:6px;padding:2px 7px}
+.lib-item .li-when{font-size:12.5px;color:var(--red);margin-top:3px;font-weight:500}
+.lib-item .li-tec{font-size:12.5px;color:var(--label2);margin-top:2px;line-height:1.4}
+/* ===== Selector de días ===== */
+.day-picker{display:flex;gap:6px;padding:6px 0 2px}
+.dp{flex:1;padding:9px 0;border-radius:10px;background:var(--card2);border:none;color:var(--label2);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s}
+.dp.on{background:var(--red);color:#fff}
+.dp:active{transform:scale(.9)}
+.sheet-hint{font-size:12px;color:var(--label3);padding:4px 0 10px}
+
 /* ===== Apartados (vistas) ===== */
 .view{display:none}
 .view.active{display:block;animation:fadeUp .28s ease}
@@ -319,10 +347,14 @@ body[data-theme="light"] #toast{color:#fff}
 <header>
   <button id="themeBtn" aria-label="Cambiar tema">☾</button>
   <button id="gearBtn" aria-label="Ajustes">⚙︎</button>
-  <p style="color:var(--red);font-family:var(--font);font-size:13px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:2px">Diego Antonio Díaz de León Trujillo</p>
+  <div class="profile-row">
+    <div class="avatar">DD</div>
+    <div class="profile-txt">
+      <span class="p-name">Diego Díaz de León</span>
+      <span class="p-greet" id="greet"></span>
+    </div>
+  </div>
   <h1>FULL BODY <span>DUP</span></h1>
-  <p>Manual personal · Mesociclo 12 semanas · Lun—Mié—Vie</p>
-  <p id="greet" style="color:#cfcfcf;font-size:12.5px;margin-top:6px;letter-spacing:0;text-transform:none"></p>
 </header>
 
 <div class="wrap">
@@ -434,6 +466,11 @@ body[data-theme="light"] #toast{color:#fff}
     </table>
   </section>
 
+
+  <section class="info">
+    <h2>Biblioteca por grupo muscular</h2>
+    <div id="library"></div>
+  </section>
 </div><!-- /view-plan -->
 
 <div class="view" id="view-guia">
@@ -447,7 +484,7 @@ body[data-theme="light"] #toast{color:#fff}
     <details><summary>Señales de adelantar el deload</summary><div>Caída de rendimiento &gt;10% sin causa, dolor articular difuso, sueño perturbado + irritabilidad 3+ días, o pulso en reposo +7–10 bpm.</div></details>
   </section>
 
-  <p class="footer-note">Tu registro se guarda en este dispositivo/navegador. Exporta antes de borrar datos del navegador.<br><b style="color:var(--red)">Versión 10 — Arquitectura iOS completa</b></p>
+  <p class="footer-note">Tu registro se guarda en este dispositivo/navegador. Exporta antes de borrar datos del navegador.<br><b style="color:var(--red)">Versión 11 — Días configurables + Biblioteca</b></p>
   <p style="text-align:center;margin-bottom:20px"><input type="file" id="importFile" accept=".json" style="display:none">
   <button id="importBtn">Importar respaldo</button><button id="exportBtn">Exportar registro (JSON)</button></p>
 </div><!-- /view-guia -->
@@ -461,10 +498,14 @@ body[data-theme="light"] #toast{color:#fff}
 <div id="sheet">
   <div class="sheet-grab"></div>
   <h3>Ajustes</h3>
+  <div class="sheet-row" style="flex-direction:column;align-items:stretch"><span class="sr-label" style="margin-bottom:6px"><span class="sr-ic">📅</span>Mis días de entrenamiento</span>
+    <div class="day-picker" id="dayPicker"></div>
+    <p class="sheet-hint">Elige exactamente 3. La sesión Fuerza va en el primero, Hipertrofia en el segundo y Volumen en el tercero. Si un día no puedes, la app te ofrecerá la sesión pendiente cualquier otro día.</p>
+  </div>
   <div class="sheet-row"><span class="sr-label"><span class="sr-ic">🌙</span>Modo oscuro</span><button class="sw" id="swTheme"></button></div>
   <div class="sheet-row"><span class="sr-label"><span class="sr-ic">📤</span>Respaldo de datos</span><button class="sheet-btn" id="shExport">Exportar</button></div>
   <div class="sheet-row"><span class="sr-label"><span class="sr-ic">📥</span>Restaurar respaldo</span><button class="sheet-btn" id="shImport">Importar</button></div>
-  <div class="sheet-row"><span class="sr-label"><span class="sr-ic">🏷️</span>Versión</span><span style="color:var(--label3)">v10 · Arquitectura iOS</span></div>
+  <div class="sheet-row"><span class="sr-label"><span class="sr-ic">🏷️</span>Versión</span><span style="color:var(--label3)">v11 · Días + Biblioteca</span></div>
 </div>
 
 <nav class="tabbar">
@@ -776,6 +817,115 @@ themeBtn.onclick = ()=>{
 
 
 
+
+/* ------- Días configurables ------- */
+state.days = state.days || [1,3,5];   // 0=Dom ... 6=Sáb
+const DAY_LETTER = ["D","L","M","X","J","V","S"];
+const DAY_FULL = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+function sortDays(arr){ return [...arr].sort((a,b)=>((a+6)%7)-((b+6)%7)); } // semana inicia lunes
+function sessionDayName(i){ return DAY_FULL[sortDays(state.days)[i]] || "—"; }
+function renderDayPicker(){
+  const dp = document.getElementById("dayPicker");
+  dp.innerHTML = "";
+  [1,2,3,4,5,6,0].forEach(d=>{
+    const b = document.createElement("button");
+    b.className = "dp" + (state.days.includes(d)?" on":"");
+    b.textContent = DAY_LETTER[d];
+    b.onclick = ()=>{
+      if(state.days.includes(d)){
+        if(state.days.length<=1) return;           // nunca 0 días
+        state.days = state.days.filter(x=>x!==d);
+      } else {
+        if(state.days.length>=3) state.days.shift(); // reemplaza el más viejo
+        state.days.push(d);
+      }
+      save(); renderDayPicker(); renderTabLabels(); renderHoy(); greet();
+    };
+    dp.appendChild(b);
+  });
+}
+function renderTabLabels(){
+  const subs = ["Neural","Mecánico","Metabólico"];
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const p = t.querySelector("p");
+    if(p) p.textContent = `${sessionDayName(i)} · ${subs[i]}`;
+  });
+}
+
+/* ------- Biblioteca de ejercicios ------- */
+const LIB = [
+ {g:"Pecho", ic:"🫁", items:[
+  {n:"Press banca plano con barra", prog:1, when:"Base de fuerza del Día 1", tec:"Escápulas retraídas, arco ligero, barra a la línea del pezón, pies firmes."},
+  {n:"Press inclinado con mancuernas", prog:1, when:"Pecho superior, Día 2", tec:"Banco a 30°, baja 2–3 s hasta estirar, codos a ~45° del torso."},
+  {n:"Cruce en polea", prog:1, when:"Aislamiento, Día 3", tec:"Paso al frente, squeeze de 1 s al centro, no dejes que el peso te jale."},
+  {n:"Press con mancuernas plano", when:"Si no hay banca libre o molesta el hombro con barra", tec:"Mayor rango que la barra; junta las mancuernas arriba sin chocarlas."},
+  {n:"Máquina convergente", when:"Fatiga alta o entrenar solo sin spotter", tec:"Ajusta el asiento para que las agarraderas queden a media pectoral."},
+  {n:"Pec deck", when:"Alternativa al cruce si las poleas están ocupadas", tec:"Codos ligeramente flexionados fijos, pausa 1 s en el cierre."}]},
+ {g:"Espalda", ic:"🦾", items:[
+  {n:"Dominadas lastradas", prog:1, when:"Fuerza vertical, Día 1", tec:"Extensión completa abajo, pecho a la barra, sin kipping."},
+  {n:"Remo con barra", prog:1, when:"Grosor de espalda, Día 2", tec:"Torso a 30–45°, jala al ombligo, excéntrico controlado sin rebote lumbar."},
+  {n:"Jalón supino", prog:1, when:"Dorsal + bíceps, Día 2", tec:"Codos a las costillas, pecho arriba, pausa abajo."},
+  {n:"Jalón al pecho ancho", prog:1, when:"Amplitud, Día 3", tec:"Agarre 1.5x hombros, jala con los codos, no con las manos."},
+  {n:"Remo T", when:"Si el remo con barra castiga la lumbar", tec:"Pecho apoyado si hay soporte; aprieta escápulas 1 s en cada rep."},
+  {n:"Remo mancuerna a una mano", when:"Desbalances o polea ocupada", tec:"Rodilla y mano en banco, jala hacia la cadera, sin rotar el torso."},
+  {n:"Remo en polea baja", when:"Variante estable para acumular volumen", tec:"Torso vertical fijo, agarre neutro, estira dejando ir las escápulas."}]},
+ {g:"Hombros", ic:"🏔️", items:[
+  {n:"Press militar de pie", prog:1, when:"Fuerza de empuje vertical, Día 1", tec:"Glúteos y abdomen tensos, cabeza 'a través' al bloquear arriba."},
+  {n:"Press Arnold sentado", prog:1, when:"Deltoide anterior y medial, Día 2", tec:"Rotación fluida de supino a prono durante el empuje, sin prisa."},
+  {n:"Elevaciones laterales (mancuerna/polea)", prog:1, when:"3x por semana, distinto estímulo cada día", tec:"Codo ligeramente flexionado, sube al plano escapular, sin impulso de cadera."},
+  {n:"Face pull", prog:1, when:"Deltoide posterior y salud de hombro, Día 2", tec:"Cuerda a los ojos, codos altos y abiertos, rotación externa al final."},
+  {n:"Press en máquina de hombro", when:"Fatiga axial alta o molestia lumbar", tec:"Espalda pegada al respaldo, no bloquees los codos con violencia."},
+  {n:"Pájaros en banco inclinado", when:"Variante de posterior si no hay polea", tec:"Pecho apoyado, mancuernas ligeras, arco amplio hacia afuera."}]},
+ {g:"Bíceps", ic:"💪", items:[
+  {n:"Curl inclinado con mancuernas", prog:1, when:"Cabeza larga en estiramiento, Día 2", tec:"Banco 45–60°, codos atrás del torso fijos, no acortes el rango abajo."},
+  {n:"Curl predicador", prog:1, when:"Aislamiento estricto, Día 3", tec:"Axilas clavadas al banco, extiende casi por completo, sube sin hombro."},
+  {n:"Curl bayesiano en polea", when:"Tensión constante; ideal si molestan las muñecas", tec:"De espaldas a la polea, brazo atrás, curl manteniendo el codo fijo."},
+  {n:"Curl martillo", when:"Braquial y antebrazo, o descanso de supinación", tec:"Agarre neutro, sube cruzando ligeramente al pecho opuesto."},
+  {n:"Curl en polea baja con barra", when:"Acumular volumen con fatiga controlada", tec:"Codos pegados, resiste la bajada 2 s."}]},
+ {g:"Tríceps", ic:"🔱", items:[
+  {n:"Fondos en paralelas", prog:1, when:"Masa general de empuje, Día 3", tec:"Torso vertical para tríceps, baja hasta 90° de codo, sin hombros al cuello."},
+  {n:"Extensión sobre cabeza", prog:1, when:"Cabeza larga en estiramiento, Día 3", tec:"Codos apuntando al techo, estira profundo detrás de la cabeza."},
+  {n:"Press banca agarre cerrado", when:"Variante pesada si los fondos molestan el hombro", tec:"Manos al ancho de hombros, codos pegados, barra a la parte baja del pecho."},
+  {n:"Extensión en polea con cuerda", when:"Aislamiento con codos sensibles", tec:"Codos fijos al torso, abre la cuerda al final, no encojas los hombros."},
+  {n:"Fondos en máquina", when:"Acumular volumen sin equilibrio", tec:"Empuja hasta extender sin bloquear con violencia."}]},
+ {g:"Cuádriceps", ic:"🦵", items:[
+  {n:"Sentadilla trasera con barra", prog:1, when:"Base de fuerza, Día 1", tec:"Rodillas en línea con los pies, profundidad al menos a paralelo, core tenso."},
+  {n:"Prensa inclinada", prog:1, when:"Volumen pesado sin carga axial, Día 2", tec:"Pies a media plataforma, baja profundo sin despegar la cadera."},
+  {n:"Hack squat", prog:1, when:"Estrés metabólico, Día 3", tec:"Espalda pegada al respaldo, deja que las rodillas viajen al frente."},
+  {n:"Sentadilla frontal", when:"Si la trasera molesta la lumbar o el hombro", tec:"Codos altos, torso más vertical, menos carga y más profundidad."},
+  {n:"Sentadilla Goblet", when:"Sin rack o como variante ligera de bombeo", tec:"Mancuerna al pecho, codos entre las rodillas al fondo."},
+  {n:"Extensión de pierna", when:"Aislamiento final o rehabilitación de rodilla", tec:"Pausa 1 s arriba con contracción dura, baja en 2–3 s."}]},
+ {g:"Isquios y glúteo", ic:"🍑", items:[
+  {n:"Peso muerto convencional", prog:1, when:"Cadena posterior pesada, Día 1", tec:"Barra pegada a las espinillas, espalda neutra, empuja el piso."},
+  {n:"Peso muerto rumano", prog:1, when:"Isquios en estiramiento, Día 2", tec:"Cadera atrás, rodillas semiflexionadas fijas, baja hasta sentir el estirón."},
+  {n:"Curl femoral sentado", prog:1, when:"Frecuencia extra de isquios, Día 1", tec:"Cadera pegada, excéntrico de 2–3 s, rango completo."},
+  {n:"Curl femoral tumbado", prog:1, when:"Volumen, Día 3", tec:"Cadera clavada al banco todo el rango, sin latigazo."},
+  {n:"Buenos días con barra", when:"Variante de RDL si no hay espacio de barras", tec:"Carga moderada, bisagra pura de cadera, torso casi paralelo al piso."},
+  {n:"Hip thrust", when:"Énfasis directo de glúteo si lo quieres priorizar", tec:"Barbilla al pecho, pausa 1 s arriba con glúteo apretado."}]},
+ {g:"Gemelos", ic:"🦶", items:[
+  {n:"Elevación de pie", prog:1, when:"Gastrocnemio, Día 3", tec:"Pausa 1 s arriba, estiramiento completo abajo, sin rebote."},
+  {n:"Elevación sentado", prog:1, when:"Sóleo, Día 2", tec:"Rodilla a 90°, mismas reglas: pausa arriba, estirón abajo."},
+  {n:"Gemelo en prensa", when:"Si las máquinas de gemelo están ocupadas", tec:"Solo la punta del pie en la plataforma, rango completo controlado."},
+  {n:"Donkey calf raise", when:"Variante con gran estiramiento", tec:"Cadera flexionada, deja caer el talón profundo antes de subir."}]},
+ {g:"Trapecio y agarre", ic:"🧗", items:[
+  {n:"Encogimientos con mancuernas", prog:1, when:"Trapecio superior, Día 3", tec:"Sube recto hacia las orejas, pausa 1 s, sin rotar los hombros."},
+  {n:"Encogimientos con barra", when:"Cargar más pesado que con mancuernas", tec:"Agarre mixto o straps si el agarre limita."},
+  {n:"Paseo del granjero", when:"Agarre + trapecio + core en un solo ejercicio", tec:"Mancuernas pesadas, pasos cortos, torso erguido 20–30 m."}]}
+];
+function renderLibrary(){
+  const el = document.getElementById("library");
+  el.innerHTML = LIB.map(gr=>`
+    <details class="lib-group">
+      <summary><span class="lib-ic">${gr.ic}</span>${gr.g}<span class="lib-count">${gr.items.length}</span></summary>
+      ${gr.items.map(it=>`
+        <div class="lib-item">
+          <div class="li-name">${it.n}${it.prog?'<span class="badge-prog">En tu programa</span>':''}</div>
+          <div class="li-when">${it.prog?'●':'↔︎'} ${it.when}</div>
+          <div class="li-tec">${it.tec}</div>
+        </div>`).join("")}
+    </details>`).join("");
+}
+
 /* ------- Vista HOY ------- */
 const DIAS_SEM = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
 const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
@@ -783,8 +933,8 @@ function weekDone(w){ return [0,1,2].filter(d=>DAYS[d].ex.every((_,i)=>state.don
 function renderHoy(){
   const now = new Date();
   document.getElementById("todayDate").textContent = `${DIAS_SEM[now.getDay()]} ${now.getDate()} de ${MESES[now.getMonth()]}`;
-  const map = {1:0, 3:1, 5:2};
-  const dayIdx = map[now.getDay()];
+  const sorted = sortDays(state.days);
+  const dayIdx = sorted.indexOf(now.getDay()) >= 0 ? sorted.indexOf(now.getDay()) : undefined;
   const kick = document.getElementById("heroKick"), title = document.getElementById("heroTitle"),
         sub = document.getElementById("heroSub"), cta = document.getElementById("heroCta");
   const ph = PHASES(curWeek);
@@ -792,18 +942,37 @@ function renderHoy(){
     const d = DAYS[dayIdx];
     const done = d.ex.every((_,i)=>state.done[`${curWeek}-${dayIdx}-${i}`]);
     kick.textContent = `Semana ${curWeek} · ${ph.n}`;
-    title.textContent = d.name;
-    sub.textContent = done ? "Sesión completada. Bien hecho — ahora a comer y dormir." : d.meta.slice(0,3).join(" · ");
-    cta.textContent = done ? "Ver sesión ✓" : "Comenzar entrenamiento";
-    cta.classList.toggle("rest", done);
-    cta.onclick = ()=>{ curDay = dayIdx; switchTab("entrenar"); };
+    const otherPend = [0,1,2].find(x=>x!==dayIdx && !DAYS[x].ex.every((_,i)=>state.done[`${curWeek}-${x}-${i}`]));
+    if(done && otherPend !== undefined){
+      title.textContent = "Sesión pendiente";
+      sub.textContent = `Hoy ya completaste ${d.name}. Tienes pendiente ${DAYS[otherPend].name}.`;
+      cta.textContent = "Adelantar sesión";
+      cta.classList.remove("rest");
+      cta.onclick = ()=>{ curDay = otherPend; switchTab("entrenar"); };
+    } else {
+      title.textContent = d.name;
+      sub.textContent = done ? "Sesión completada. Bien hecho — ahora a comer y dormir." : d.meta.slice(0,3).join(" · ");
+      cta.textContent = done ? "Ver sesión ✓" : "Comenzar entrenamiento";
+      cta.classList.toggle("rest", done);
+      cta.onclick = ()=>{ curDay = dayIdx; switchTab("entrenar"); };
+    }
   } else {
+    // ¿Hay sesiones pendientes esta semana? Ofrécelas aunque no sea día configurado
+    const pendIdx = [0,1,2].find(d=>!DAYS[d].ex.every((_,i)=>state.done[`${curWeek}-${d}-${i}`]));
     kick.textContent = `Semana ${curWeek} · ${ph.n}`;
-    title.textContent = "Día de descanso";
-    sub.textContent = "Recuperar también es entrenar. Proteína, sueño y listo.";
-    cta.textContent = "Ver mi plan";
-    cta.classList.add("rest");
-    cta.onclick = ()=>switchTab("plan");
+    if(pendIdx !== undefined){
+      title.textContent = "Sesión pendiente";
+      sub.textContent = `${DAYS[pendIdx].name} — programada para ${sessionDayName(pendIdx).toLowerCase()}, pero puedes hacerla hoy.`;
+      cta.textContent = "Entrenar hoy";
+      cta.classList.remove("rest");
+      cta.onclick = ()=>{ curDay = pendIdx; switchTab("entrenar"); };
+    } else {
+      title.textContent = "Semana completa";
+      sub.textContent = "Las 3 sesiones hechas. Recuperar también es entrenar.";
+      cta.textContent = "Ver mi progreso";
+      cta.classList.add("rest");
+      cta.onclick = ()=>switchTab("progreso");
+    }
   }
   // Anillo semanal
   const wd = weekDone(curWeek);
@@ -952,13 +1121,15 @@ function loadSuggestion(w, d, e){
 }
 
 /* ------- Saludo ------- */
-(function(){
+function greet(){
   const h = new Date().getHours();
   const s = h<12?"Buenos días":h<19?"Buenas tardes":"Buenas noches";
-  const day = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"][new Date().getDay()];
-  const hint = day==="lunes"?"hoy toca Fuerza":day==="miércoles"?"hoy toca Hipertrofia":day==="viernes"?"hoy toca Volumen":"día de descanso — recuperar también es entrenar";
-  document.getElementById("greet").textContent = `${s}, Diego — ${hint}.`;
-})();
+  const idx = sortDays(state.days).indexOf(new Date().getDay());
+  const names = ["Fuerza","Hipertrofia","Volumen"];
+  const hint = idx>=0 ? `hoy toca ${names[idx]}` : "día de descanso";
+  document.getElementById("greet").textContent = `${s} — ${hint}`;
+}
+greet();
 
 /* ------- Peso corporal + adherencia ------- */
 function renderStats(){
@@ -1053,7 +1224,7 @@ document.getElementById("importFile").onchange = function(){
 };
 
 renderWeeks(); renderDay(); renderStats(); renderNote(); drawChart(); tShow();
-document.body.classList.add("hide-timer"); renderHoy(); syncSwitch();
+document.body.classList.add("hide-timer"); renderDayPicker(); renderTabLabels(); renderLibrary(); renderHoy(); syncSwitch();
 if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
 </script>
 </body>
