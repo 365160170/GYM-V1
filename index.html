@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="DUP Diego">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="theme-color" content="#000000">
-<title>Diego Díaz de León — Full Body DUP · v11</title>
+<title>Diego Díaz de León — Full Body DUP · v12</title>
 <style>
 :root{
   --bg:#000000; --card:#1C1C1E; --card2:#2C2C2E; --fill:#3A3A3C;
@@ -138,7 +138,7 @@ details div{padding:0 16px 14px;font-size:14px;color:var(--label2);line-height:1
 #helpPop .close{position:absolute;top:8px;right:12px;color:var(--label3);cursor:pointer;font-size:17px}
 
 /* ===== Botones inferiores ===== */
-#exportBtn,#importBtn{font-family:inherit!important;font-size:15px!important;font-weight:600!important;letter-spacing:0!important;text-transform:none!important;background:var(--card)!important;color:var(--red)!important;border:none!important;border-radius:var(--r-md)!important;padding:13px 20px!important;cursor:pointer}
+
 .footer-note{color:var(--label3);font-size:12px;text-align:center;margin:32px 0 12px}
 
 
@@ -232,6 +232,16 @@ header h1{transition:font-size .25s ease}
 #gearBtn:active{transform:scale(.9) rotate(30deg)}
 header.compact #gearBtn, header.compact #themeBtn{top:calc(6px + env(safe-area-inset-top));width:32px;height:32px;font-size:14px}
 
+
+
+/* ===== Botonera de respaldo ===== */
+.btn-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 20px}
+.btn-grid .b-full{grid-column:1/-1}
+.action-btn{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--card);border:none;border-radius:var(--r-md);padding:14px 10px;font-family:inherit;cursor:pointer;transition:transform .15s ease, background .2s}
+.action-btn:active{transform:scale(.96);background:var(--card2)}
+.action-btn .ab-ic{font-size:22px}
+.action-btn .ab-t{font-size:13.5px;font-weight:700;color:var(--label)}
+.action-btn .ab-s{font-size:11px;color:var(--label3)}
 
 /* ===== Perfil en header ===== */
 .profile-row{display:flex;align-items:center;gap:11px;margin-bottom:14px;padding-right:96px}
@@ -484,7 +494,7 @@ body[data-theme="light"] #toast{color:#fff}
     <details><summary>Señales de adelantar el deload</summary><div>Caída de rendimiento &gt;10% sin causa, dolor articular difuso, sueño perturbado + irritabilidad 3+ días, o pulso en reposo +7–10 bpm.</div></details>
   </section>
 
-  <p class="footer-note">Tu registro se guarda en este dispositivo/navegador. Exporta antes de borrar datos del navegador.<br><b style="color:var(--red)">Versión 11 — Días configurables + Biblioteca</b></p>
+  <p class="footer-note">Tu registro se guarda en este dispositivo/navegador. Exporta antes de borrar datos del navegador.<br><b style="color:var(--red)">Versión 12 — Excel + recordatorio mensual</b></p>
   <p style="text-align:center;margin-bottom:20px"><input type="file" id="importFile" accept=".json" style="display:none">
   <button id="importBtn">Importar respaldo</button><button id="exportBtn">Exportar registro (JSON)</button></p>
 </div><!-- /view-guia -->
@@ -503,9 +513,10 @@ body[data-theme="light"] #toast{color:#fff}
     <p class="sheet-hint">Elige exactamente 3. La sesión Fuerza va en el primero, Hipertrofia en el segundo y Volumen en el tercero. Si un día no puedes, la app te ofrecerá la sesión pendiente cualquier otro día.</p>
   </div>
   <div class="sheet-row"><span class="sr-label"><span class="sr-ic">🌙</span>Modo oscuro</span><button class="sw" id="swTheme"></button></div>
+  <div class="sheet-row"><span class="sr-label"><span class="sr-ic">📊</span>Exportar a Excel</span><button class="sheet-btn" id="shXls">Exportar</button></div>
   <div class="sheet-row"><span class="sr-label"><span class="sr-ic">📤</span>Respaldo de datos</span><button class="sheet-btn" id="shExport">Exportar</button></div>
   <div class="sheet-row"><span class="sr-label"><span class="sr-ic">📥</span>Restaurar respaldo</span><button class="sheet-btn" id="shImport">Importar</button></div>
-  <div class="sheet-row"><span class="sr-label"><span class="sr-ic">🏷️</span>Versión</span><span style="color:var(--label3)">v11 · Días + Biblioteca</span></div>
+  <div class="sheet-row"><span class="sr-label"><span class="sr-ic">🏷️</span>Versión</span><span style="color:var(--label3)">v12 · Excel + recordatorios</span></div>
 </div>
 
 <nav class="tabbar">
@@ -818,6 +829,60 @@ themeBtn.onclick = ()=>{
 
 
 
+
+/* ------- Exportar a Excel (CSV) ------- */
+function exportExcel(){
+  const esc = v => `"${String(v??"").replace(/"/g,'""')}"`;
+  const rows = [["Semana","Dia","Sesion","Ejercicio","Serie","Kg","Reps","e1RM estimado"]];
+  for(let w=1; w<=12; w++){
+    for(let d=0; d<3; d++){
+      DAYS[d].ex.forEach((ex,e)=>{
+        for(let s=0; s<ex.sets+1; s++){
+          const l = state.logs[`${w}-${d}-${e}-${s}`];
+          if(l && (l.kg || l.reps)){
+            const e1 = (l.kg && l.reps) ? Math.round(l.kg*(1+l.reps/30)*10)/10 : "";
+            rows.push([w, sessionDayName(d), DAYS[d].name, ex.n, "S"+(s+1), l.kg||"", l.reps||"", e1]);
+          }
+        }
+      });
+    }
+  }
+  rows.push([]); rows.push(["Peso corporal"]); rows.push(["Semana","Kg"]);
+  Object.keys(state.bw).map(Number).sort((a,b)=>a-b).forEach(w=>rows.push([w, state.bw[w]]));
+  rows.push([]); rows.push(["Notas de sesion"]); rows.push(["Semana","Sesion","Nota"]);
+  Object.keys(state.notes).forEach(k=>{
+    if(!state.notes[k]) return;
+    const [w,d] = k.split("-");
+    rows.push([w, DAYS[d]?.name||d, state.notes[k]]);
+  });
+  const csv = "\ufeff" + rows.map(r=>r.map(esc).join(",")).join("\r\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  const now = new Date();
+  a.download = `entrenamiento_diego_${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}.csv`;
+  a.click();
+  showNotif("📊 Excel exportado — ábrelo con Excel o Numbers");
+}
+document.getElementById("exportXlsBtn").onclick = exportExcel;
+
+/* ------- Recordatorio de exportar a fin de mes ------- */
+(function(){
+  const now = new Date();
+  const lastDay = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  const key = `${now.getFullYear()}-${now.getMonth()}`;
+  const isLast = now.getDate() === lastDay;
+  const isFirst = now.getDate() === 1;
+  const prevKey = `${now.getFullYear()}-${now.getMonth()-1}`;
+  if(isLast && store.get("dup12_expmes") !== key){
+    store.set("dup12_expmes", key);
+    setTimeout(()=>showNotif("📤 Último día del mes — exporta tu respaldo desde Guía o Ajustes."), 2500);
+  } else if(isFirst && store.get("dup12_expmes") !== prevKey && store.get("dup12_expmes") !== key){
+    store.set("dup12_expmes", key);
+    setTimeout(()=>showNotif("📤 Empezó el mes y no exportaste el anterior — respalda tus datos hoy."), 2500);
+  }
+})();
+
 /* ------- Días configurables ------- */
 state.days = state.days || [1,3,5];   // 0=Dom ... 6=Sáb
 const DAY_LETTER = ["D","L","M","X","J","V","S"];
@@ -1039,6 +1104,7 @@ const swTheme = document.getElementById("swTheme");
 function syncSwitch(){ swTheme.classList.toggle("on", document.body.dataset.theme!=="light"); }
 swTheme.onclick = ()=>{ document.getElementById("themeBtn").click(); syncSwitch(); };
 document.getElementById("shExport").onclick = ()=>{ document.getElementById("exportBtn").click(); };
+document.getElementById("shXls").onclick = ()=>{ exportExcel(); };
 document.getElementById("shImport").onclick = ()=>{ closeSheet(); document.getElementById("importBtn").click(); };
 
 /* ------- Navegación por apartados ------- */
