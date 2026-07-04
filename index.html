@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DUP Diego">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="theme-color" content="#000000">
+<title>Diego Díaz de León — Full Body DUP · v9</title>
+<style>
+:root{
+  --bg:#000000; --card:#1C1C1E; --card2:#2C2C2E; --fill:#3A3A3C;
+  --sep:rgba(84,84,88,.5); --label:#FFFFFF; --label2:rgba(235,235,245,.6); --label3:rgba(235,235,245,.3);
+  --red:#FF453A; --red-deep:#E63946; --green:#30D158;
+  --r-lg:20px; --r-md:14px; --r-sm:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--label);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.45;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+
+/* ===== Header estilo Large Title ===== */
+header{padding:calc(14px + env(safe-area-inset-top)) 20px 6px;text-align:left;background:var(--bg)}
+header>p:first-child{font-size:11px!important;font-weight:600;letter-spacing:.14em!important;text-transform:uppercase;color:var(--red)!important;font-family:inherit!important;margin-bottom:2px!important}
+header h1{font-size:34px;font-weight:800;letter-spacing:-.02em;font-family:inherit;line-height:1.15}
+header h1 span{color:var(--red)}
+header p{color:var(--label2);font-size:13px;letter-spacing:0;text-transform:none;margin-top:2px}
+#greet{color:var(--label2)!important;font-size:15px!important;margin-top:10px!important}
+
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+
+/* ===== Semanas: pills scroll ===== */
+.weekbar{display:flex;gap:8px;overflow-x:auto;padding:14px 2px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.weekbar::-webkit-scrollbar{display:none}
+.wk{flex:0 0 auto;min-width:56px;padding:9px 6px;background:var(--card);border:none;border-radius:var(--r-md);text-align:center;cursor:pointer;transition:transform .15s ease,background .2s ease}
+.wk small{display:block;font-size:9px;font-weight:600;letter-spacing:.08em;color:var(--label3);text-transform:uppercase}
+.wk b{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.wk.deload small{color:var(--green)}
+.wk.active{background:var(--red)}
+.wk.active small{color:rgba(255,255,255,.75)}
+.wk.done{box-shadow:inset 0 0 0 1.5px var(--green)}
+.wk:active{transform:scale(.93)}
+.phase{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:12px 2px 2px;font-size:12px;color:var(--label2)}
+.phase b{color:var(--label);font-weight:600}
+.phase .tagd{color:var(--green);font-weight:600}
+
+/* ===== Días: segmented control ===== */
+.tabs{display:flex;background:var(--card);border-radius:12px;padding:3px;margin:14px 0;gap:0}
+.tab{flex:1;padding:9px 2px;text-align:center;background:transparent;border:none;border-radius:9px;cursor:pointer;transition:background .2s ease}
+.tab h3{font-family:inherit;font-size:14px;font-weight:600;letter-spacing:0;text-transform:none}
+.tab p{font-size:10.5px;color:var(--label3);margin-top:1px}
+.tab.active{background:var(--fill)}
+.tab.active h3{color:var(--red)}
+.tab.active p{color:var(--label2)}
+
+/* ===== Meta y avisos ===== */
+.session-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.chip{background:var(--card);border:none;border-radius:20px;padding:6px 13px;font-size:12.5px;color:var(--label2)}
+.chip b{color:var(--label);font-weight:600}
+.deload-note{display:none;background:rgba(48,209,88,.12);border:none;border-radius:var(--r-md);padding:12px 16px;margin-bottom:14px;font-size:14px;color:var(--label)}
+.deload-note b{color:var(--green)}
+
+/* ===== Ejercicios: grouped list ===== */
+#exlist{background:var(--card);border-radius:var(--r-lg);overflow:hidden}
+.ex{background:transparent;border:none;border-radius:0;margin:0;overflow:visible;position:relative}
+.ex+.ex::before{content:"";position:absolute;top:0;left:52px;right:0;height:.5px;background:var(--sep)}
+.ex-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;min-height:60px}
+.ex-head:active{background:var(--card2)}
+.ex-num{font-family:inherit;font-size:15px;font-weight:700;color:var(--red);min-width:24px;text-align:center;font-variant-numeric:tabular-nums}
+.ex-title{flex:1;min-width:0}
+.ex-title h4{font-size:16px;font-weight:600;letter-spacing:-.01em}
+.ex-title p{font-size:13px;color:var(--label2);margin-top:1px}
+.ex-check{width:26px;height:26px;border:1.5px solid var(--fill);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex:0 0 auto;transition:all .2s ease;color:transparent}
+.ex.done .ex-check{background:var(--green);border-color:var(--green);color:#000}
+.ex.done .ex-title h4{color:var(--label3);text-decoration:line-through}
+.ex-body{display:none;padding:4px 16px 16px 52px;background:transparent}
+.ex.open .ex-body{display:block;animation:slideDown .22s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+.log-row{display:grid;grid-template-columns:40px 1fr 1fr 58px;gap:8px;align-items:center;margin-bottom:8px}
+.log-row label{font-size:11px;font-weight:600;color:var(--label3);text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center}
+.log-row input{width:100%;background:var(--card2);border:none;border-radius:var(--r-sm);color:var(--label);padding:11px 10px;font-size:16px;text-align:center;font-variant-numeric:tabular-nums;transition:box-shadow .15s ease}
+.log-row input::placeholder{color:var(--label3)}
+.log-row input:focus{outline:none;box-shadow:0 0 0 2px var(--red)}
+.log-row input:not(:placeholder-shown){background:var(--fill)}
+.log-hint{font-size:12px;color:var(--label3);margin-top:4px}
+.prev{font-size:13px;color:var(--green);margin:6px 0 10px;font-weight:500}
+.tip{font-size:13px;color:var(--label2);background:var(--card2);border-left:3px solid var(--red);padding:10px 12px;border-radius:var(--r-sm);margin-top:10px;line-height:1.4}
+
+/* ===== Notas ===== */
+#sesNote{width:100%;background:var(--card);border:none;border-radius:var(--r-md);color:var(--label);padding:13px 16px;font-size:15px;font-family:inherit;resize:vertical;margin-top:12px}
+#sesNote::placeholder{color:var(--label3)}
+#sesNote:focus{outline:none;box-shadow:0 0 0 2px var(--red)}
+
+/* ===== Secciones info ===== */
+section.info{margin:30px 0}
+section.info h2{font-family:inherit;font-size:20px;font-weight:700;letter-spacing:-.02em;text-transform:none;color:var(--label);margin-bottom:12px;border:none;padding:0}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;background:var(--card);border-radius:var(--r-lg);overflow:hidden}
+th{background:var(--card2);font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;text-align:left;padding:10px 14px;color:var(--label2);border:none}
+td{padding:11px 14px;border:none;border-top:.5px solid var(--sep);color:var(--label);vertical-align:top}
+td:first-child{color:var(--label2);white-space:nowrap}
+tr:nth-child(even) td{background:transparent}
+
+.bar-wrap{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px}
+.bar-label span:last-child{color:var(--label2);font-size:12.5px}
+.bar{height:7px;background:var(--card2);border-radius:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--red);border-radius:5px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.bar i.good{background:var(--green)}
+
+details{background:var(--card);border:none;border-radius:var(--r-md);margin-bottom:8px;overflow:hidden}
+details summary{padding:14px 16px;cursor:pointer;font-weight:600;font-size:15px;list-style:none;display:flex;align-items:center;position:relative}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"";width:8px;height:8px;border-right:2px solid var(--label3);border-bottom:2px solid var(--label3);transform:rotate(-45deg);position:absolute;right:18px;transition:transform .2s ease;margin:0}
+details[open] summary::before{transform:rotate(45deg)}
+details summary:active{background:var(--card2)}
+details div{padding:0 16px 14px;font-size:14px;color:var(--label2);line-height:1.5}
+
+/* ===== Mi progreso: tarjetas ===== */
+#volbars, .prog-card{background:var(--card);border-radius:var(--r-lg);padding:16px}
+
+/* ===== Timer flotante ===== */
+.timerbar{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));left:14px;right:14px;background:rgba(28,28,30,.78);backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);border:.5px solid rgba(255,255,255,.1);border-radius:24px;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;z-index:50;box-shadow:0 10px 34px rgba(0,0,0,.5);max-width:560px;margin:0 auto}
+.timerbar button{font-family:inherit;font-size:14px;font-weight:600;letter-spacing:0;text-transform:none;background:var(--fill);color:var(--label);border:none;border-radius:14px;padding:10px 14px;cursor:pointer;transition:transform .15s ease}
+.timerbar button:active{transform:scale(.93)}
+.timerbar button.go{background:var(--red);font-weight:700;padding:10px 20px}
+#tdisp{font-family:inherit;font-size:26px;font-weight:700;min-width:74px;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+#tdisp.low{color:var(--red);animation:pulse 1s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ===== Ayuda ===== */
+.help{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--fill);color:var(--label2);font-size:10px;font-weight:700;cursor:pointer;margin-left:5px;vertical-align:middle;user-select:none;flex:0 0 auto;transition:background .15s}
+.help:active{background:var(--red);color:#fff}
+#helpPop{position:fixed;z-index:100;max-width:290px;background:rgba(28,28,30,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:.5px solid rgba(255,255,255,.12);border-radius:var(--r-md);padding:14px 16px;font-size:14px;line-height:1.45;color:var(--label);box-shadow:0 16px 50px rgba(0,0,0,.6);display:none;animation:slideDown .18s ease}
+#helpPop b{color:var(--red);display:block;font-family:inherit;font-size:13px;font-weight:700;letter-spacing:.02em;text-transform:none;margin-bottom:5px}
+#helpPop .close{position:absolute;top:8px;right:12px;color:var(--label3);cursor:pointer;font-size:17px}
+
+/* ===== Botones inferiores ===== */
+#exportBtn,#importBtn{font-family:inherit!important;font-size:15px!important;font-weight:600!important;letter-spacing:0!important;text-transform:none!important;background:var(--card)!important;color:var(--red)!important;border:none!important;border-radius:var(--r-md)!important;padding:13px 20px!important;cursor:pointer}
+.footer-note{color:var(--label3);font-size:12px;text-align:center;margin:32px 0 12px}
+
+
+/* ===== Tema claro (iOS light) ===== */
+body[data-theme="light"]{
+  --bg:#F2F2F7; --card:#FFFFFF; --card2:#E5E5EA; --fill:#D1D1D6;
+  --sep:rgba(60,60,67,.29); --label:#000000; --label2:rgba(60,60,67,.6); --label3:rgba(60,60,67,.3);
+  --red:#FF3B30; --green:#34C759;
+}
+body[data-theme="light"] .timerbar{background:rgba(249,249,249,.8);border-color:rgba(0,0,0,.08);box-shadow:0 10px 34px rgba(0,0,0,.16)}
+body[data-theme="light"] #helpPop{background:rgba(249,249,249,.94);border-color:rgba(0,0,0,.1);box-shadow:0 16px 50px rgba(0,0,0,.22)}
+body[data-theme="light"] .ex.done .ex-check{color:#fff}
+body[data-theme="light"] .deload-note{background:rgba(52,199,89,.14)}
+body{transition:background .25s ease,color .25s ease}
+/* Botón de tema */
+#themeBtn{position:absolute;top:calc(16px + env(safe-area-inset-top));right:18px;width:38px;height:38px;border-radius:50%;background:var(--card);border:none;color:var(--label);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s ease;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+#themeBtn:active{transform:scale(.9)}
+
+
+
+/* Completados al final */
+.done-divider{display:flex;align-items:center;gap:10px;padding:10px 16px 6px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--label3)}
+.done-divider::after{content:"";flex:1;height:.5px;background:var(--sep)}
+.ex.done{opacity:.55}
+.ex.done .ex-title p{text-decoration:line-through}
+/* Progreso de sesión */
+.sess-progress{display:flex;align-items:center;gap:12px;margin:0 2px 12px}
+.sess-progress .sp-bar{flex:1;height:6px;background:var(--card);border-radius:4px;overflow:hidden}
+.sess-progress .sp-bar i{display:block;height:100%;background:var(--red);border-radius:4px;transition:width .4s cubic-bezier(.2,.8,.2,1)}
+.sess-progress .sp-bar i.full{background:var(--green)}
+.sess-progress span{font-size:12.5px;font-weight:600;color:var(--label2);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+
+
+/* ===== Apartados (vistas) ===== */
+.view{display:none}
+.view.active{display:block;animation:fadeUp .28s ease}
+/* Tab bar iOS */
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;justify-content:space-around;background:rgba(18,18,20,.85);backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);border-top:.5px solid var(--sep);padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
+body[data-theme="light"] .tabbar{background:rgba(249,249,249,.88)}
+.tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--label3);font-family:inherit;font-size:10px;font-weight:600;cursor:pointer;padding:4px 0;transition:color .2s,transform .12s}
+.tb:active{transform:scale(.92)}
+.tb .tb-ic{font-size:22px;filter:grayscale(1) opacity(.55);transition:filter .2s,transform .2s}
+.tb.active{color:var(--red)}
+.tb.active .tb-ic{filter:none;transform:translateY(-1px)}
+/* Timer flota sobre la tab bar y solo en Entrenar */
+.timerbar{bottom:calc(72px + env(safe-area-inset-bottom))}
+body.hide-timer .timerbar{display:none}
+body{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
+
+/* ===== Notificación motivacional ===== */
+#notif{position:fixed;top:calc(10px + env(safe-area-inset-top));left:12px;right:12px;max-width:560px;margin:0 auto;background:rgba(28,28,30,.85);backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);border:.5px solid rgba(255,255,255,.12);border-radius:18px;padding:12px 14px;z-index:80;display:none;box-shadow:0 12px 40px rgba(0,0,0,.5);cursor:pointer}
+body[data-theme="light"] #notif{background:rgba(249,249,249,.9);border-color:rgba(0,0,0,.08)}
+#notif.show{display:flex;gap:11px;align-items:flex-start;animation:notifIn .45s cubic-bezier(.34,1.4,.64,1)}
+#notif.hide{animation:notifOut .3s ease forwards}
+@keyframes notifIn{from{opacity:0;transform:translateY(-80px)}to{opacity:1;transform:none}}
+@keyframes notifOut{to{opacity:0;transform:translateY(-80px)}}
+#notif .n-icon{width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,#FF453A,#c22832);display:flex;align-items:center;justify-content:center;font-size:19px;flex:0 0 auto}
+#notif .n-body{flex:1;min-width:0}
+#notif .n-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+#notif .n-app{font-size:12px;font-weight:700;color:var(--label2);text-transform:uppercase;letter-spacing:.04em}
+#notif .n-time{font-size:11.5px;color:var(--label3)}
+#notif .n-msg{font-size:14.5px;color:var(--label);margin-top:2px;line-height:1.35}
+/* Sugerencia de carga */
+.sug{font-size:13px;color:var(--red);font-weight:600;margin:2px 0 8px}
+.sug.hold{color:var(--label2)}
+
+/* ===== Animaciones ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes popIn{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.18)}100%{transform:scale(1);opacity:1}}
+@keyframes checkPop{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+@keyframes shimmer{from{background-position:-200% 0}to{background-position:200% 0}}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,14px) scale(.92)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+
+header>*{animation:fadeUp .45s ease backwards}
+header>p:first-child{animation-delay:.02s}
+header h1{animation-delay:.08s}
+header h1+p{animation-delay:.14s}
+#greet{animation-delay:.2s}
+
+/* entrada escalonada de la lista al cambiar día/semana */
+#exlist .ex{animation:fadeUp .3s ease backwards}
+#exlist .ex:nth-child(1){animation-delay:.02s}#exlist .ex:nth-child(2){animation-delay:.05s}
+#exlist .ex:nth-child(3){animation-delay:.08s}#exlist .ex:nth-child(4){animation-delay:.11s}
+#exlist .ex:nth-child(5){animation-delay:.14s}#exlist .ex:nth-child(6){animation-delay:.17s}
+#exlist .ex:nth-child(7){animation-delay:.20s}#exlist .ex:nth-child(8){animation-delay:.23s}
+#exlist .ex:nth-child(9){animation-delay:.26s}#exlist .ex:nth-child(10){animation-delay:.29s}
+
+/* check con rebote */
+.ex.done .ex-check{animation:checkPop .35s cubic-bezier(.34,1.56,.64,1)}
+
+/* semana activa con leve rebote */
+.wk.active{animation:popIn .28s cubic-bezier(.34,1.56,.64,1)}
+
+/* deload note entra suave */
+.deload-note{animation:fadeUp .35s ease}
+
+/* barras de volumen: arrancan en 0, JS las lanza al verse */
+.bar i{width:0}
+
+/* botón tema gira */
+#themeBtn{transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
+#themeBtn.spin{transform:rotate(180deg) scale(.9)}
+
+/* toast de sesión completada */
+#toast{position:fixed;bottom:calc(92px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--green);color:#000;font-weight:700;font-size:15px;padding:12px 22px;border-radius:22px;z-index:60;box-shadow:0 10px 30px rgba(48,209,88,.4);display:none;white-space:nowrap}
+#toast.show{display:block;animation:toastIn .35s cubic-bezier(.34,1.56,.64,1)}
+body[data-theme="light"] #toast{color:#fff}
+
+/* timer: anillo de progreso alrededor del display */
+#tdisp{position:relative}
+
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+@media(max-width:400px){.log-row{grid-template-columns:36px 1fr 1fr 54px}header h1{font-size:30px}}
+</style>
+</head>
+<body>
+
+<header>
+  <button id="themeBtn" aria-label="Cambiar tema">☾</button>
+  <p style="color:var(--red);font-family:var(--font);font-size:13px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:2px">Diego Antonio Díaz de León Trujillo</p>
+  <h1>FULL BODY <span>DUP</span></h1>
+  <p>Manual personal · Mesociclo 12 semanas · Lun—Mié—Vie</p>
+  <p id="greet" style="color:#cfcfcf;font-size:12.5px;margin-top:6px;letter-spacing:0;text-transform:none"></p>
+</header>
+
+<div class="wrap">
+  <div class="view active" id="view-entrenar">
+  <div class="weekbar" id="weekbar"></div>
+  <div class="phase"><span>Fase: <b id="phaseName"></b></span><span id="phaseTag"></span></div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="deload-note" id="deloadNote">
+    <b>SEMANA DELOAD:</b> carga −15%, quita 1–2 series por ejercicio, RPE máximo 6. Los pesos sugeridos abajo ya vienen reducidos.
+  </div>
+
+  <div class="session-meta" id="meta"></div>
+  <div class="sess-progress"><div class="sp-bar"><i id="spFill"></i></div><span id="spText">0/7</span></div>
+  <div id="exlist"></div>
+  <div style="margin-top:10px">
+    <textarea id="sesNote" rows="2" placeholder="Notas de la sesión (energía, molestias, ajustes)..."></textarea>
+  </div>
+</div><!-- /view-entrenar -->
+
+<div class="view" id="view-progreso">
+
+  <section class="info">
+    <h2>Mi progreso</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      <div class="chip" style="padding:10px 14px">Adherencia:<span class="help" data-h="adherencia" role="button" aria-label="Ayuda">?</span> <b id="adh">0%</b> <span style="color:var(--gray)">(<span id="adhD">0</span>/36 sesiones)</span></div>
+      <div class="chip" style="padding:9px 14px;display:flex;align-items:center;gap:8px">Peso corporal<span class="help" data-h="peso" role="button" aria-label="Ayuda">?</span> sem. <b id="bwWeek"></b>:
+        <input id="bwInput" type="number" inputmode="decimal" step="0.1" min="0" placeholder="kg" style="width:74px;background:var(--card2);border:none;border-radius:10px;color:var(--label);padding:8px;text-align:center;font-size:15px">
+      </div>
+      <div class="chip" style="padding:10px 14px">Cambio de peso:<span class="help" data-h="deltapeso" role="button" aria-label="Ayuda">?</span> <b id="bwDelta">—</b></div>
+    </div>
+    <div class="prog-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:15px;font-weight:600">e1RM estimado por semana<span class="help" data-h="e1rm" role="button" aria-label="Ayuda">?</span></span>
+        <select id="chartLift" style="background:var(--card2);border:none;border-radius:10px;color:var(--label);padding:8px 12px;font-size:14px;font-family:inherit">
+          <option value="0-0">Sentadilla</option>
+          <option value="0-1">Peso muerto</option>
+          <option value="0-2">Press banca</option>
+          <option value="0-3">Dominadas lastradas</option>
+          <option value="0-4">Press militar</option>
+        </select>
+      </div>
+      <canvas id="chart" height="150" style="width:100%"></canvas>
+      <p style="font-size:11px;color:var(--gray);margin-top:6px">e1RM = carga × (1 + reps/30), calculado con tu mejor serie registrada de cada semana (fórmula de Epley).</p>
+    </div>
+  </section>
+
+  <section class="info">
+    <h2>Volumen semanal por músculo <span class="help" data-h="volumen" role="button" aria-label="Ayuda">?</span></h2>
+    <div id="volbars"></div>
+  </section>
+
+</div><!-- /view-progreso -->
+
+<div class="view" id="view-plan">
+  <section class="info">
+    <h2>Plan de 12 semanas</h2>
+    <table>
+      <tr><th>Semanas</th><th>Fase</th><th>Acción</th></tr>
+      <tr><td>1–5</td><td>Acumulación</td><td>Rutina completa. Doble progresión en Días 2 y 3; sube carga en Día 1 al llegar al tope del rango con el RPE indicado.</td></tr>
+      <tr><td>6</td><td>Deload</td><td>Carga −15%, volumen al 60%, RPE máx. 6. Obligatorio.</td></tr>
+      <tr><td>7–10</td><td>Intensificación</td><td>Día 1: 3–5 reps con más carga. Día 2: +1 serie en prensa, press inclinado, remo y RDL.</td></tr>
+      <tr><td>11</td><td>Realización</td><td>Intenta récords de carga o reps en los básicos del Día 1 (RPE 9, nunca 10).</td></tr>
+      <tr><td>12</td><td>Deload + evaluación</td><td>Deload igual que semana 6. Toma medidas, fotos y cargas finales; compara contra la semana 1.</td></tr>
+    </table>
+  </section>
+
+  <section class="info">
+    <h2>Nutrición y recuperación</h2>
+    <table>
+      <tr><th>Variable</th><th>Objetivo</th></tr>
+      <tr><td>Proteína</td><td>1.8–2.2 g/kg/día en 4+ comidas</td></tr>
+      <tr><td>Calorías</td><td>TDEE + 200–350 kcal (volumen limpio)</td></tr>
+      <tr><td>Carbohidratos</td><td>3–5 g/kg · 1–2 g/kg en las 2 h pre-entreno</td></tr>
+      <tr><td>Grasas</td><td>0.8–1 g/kg mínimo</td></tr>
+      <tr><td>Sueño</td><td>7–9 h — dormir &lt;6 h reduce testosterona ~15%</td></tr>
+      <tr><td>Creatina</td><td>3–5 g diarios, sin ciclar (Tier 1)</td></tr>
+      <tr><td>Cafeína</td><td>3–6 mg/kg 30–60 min pre-entreno</td></tr>
+    </table>
+  </section>
+
+</div><!-- /view-plan -->
+
+<div class="view" id="view-guia">
+  <section class="info">
+    <h2>Guía rápida</h2>
+    <details><summary>RPE y RIR</summary><div>RPE 8 = te quedan ~2 reps (RIR 2). RPE 9 = 1 rep. RPE 10 = fallo absoluto — solo permitido en la última serie de accesorios del Día 3.</div></details>
+    <details><summary>Doble progresión</summary><div>Cuando completes el tope del rango en todas las series con el RPE correcto, sube el peso la siguiente semana (+2.5 kg upper / +5 kg lower) y regresa al límite inferior del rango.</div></details>
+    <details><summary>Fallo técnico</summary><div>Si la técnica colapsa, la serie terminó. No existe la "última rep válida" con espalda redonda — más allá del fallo técnico solo hay riesgo, no estímulo.</div></details>
+    <details><summary>Fatiga axial</summary><div>Sentadilla va pesada y peso muerto moderado el mismo día para no saturar lumbar y SNC. Si la sentadilla salió muy demandante, mantén el peso muerto conservador.</div></details>
+    <details><summary>Protocolo de dolor</summary><div>Dolor agudo/punzante durante la serie: detente y sustituye el ejercicio. Molestia articular difusa: reduce rango y carga. Ardor muscular y DOMS de 24–72 h: normales, continúa.</div></details>
+    <details><summary>Señales de adelantar el deload</summary><div>Caída de rendimiento &gt;10% sin causa, dolor articular difuso, sueño perturbado + irritabilidad 3+ días, o pulso en reposo +7–10 bpm.</div></details>
+  </section>
+
+  <p class="footer-note">Tu registro se guarda en este dispositivo/navegador. Exporta antes de borrar datos del navegador.<br><b style="color:var(--red)">Versión 9 — Apartados + Coach</b></p>
+  <p style="text-align:center;margin-bottom:20px"><input type="file" id="importFile" accept=".json" style="display:none">
+  <button id="importBtn">Importar respaldo</button><button id="exportBtn">Exportar registro (JSON)</button></p>
+</div><!-- /view-guia -->
+</div>
+
+<div id="notif"><div class="n-icon">🏋️</div><div class="n-body"><div class="n-top"><span class="n-app">Coach DUP</span><span class="n-time">ahora</span></div><div class="n-msg"></div></div></div>
+<div id="toast">Sesión completada 💪</div>
+<div id="helpPop"><span class="close">×</span><b id="hpT"></b><span id="hpB"></span></div>
+
+<nav class="tabbar">
+  <button class="tb active" data-v="entrenar"><span class="tb-ic">🏋️</span><span>Entrenar</span></button>
+  <button class="tb" data-v="progreso"><span class="tb-ic">📈</span><span>Progreso</span></button>
+  <button class="tb" data-v="plan"><span class="tb-ic">🗓️</span><span>Plan</span></button>
+  <button class="tb" data-v="guia"><span class="tb-ic">📖</span><span>Guía</span></button>
+</nav>
+
+<div class="timerbar">
+  <span class="help" data-h="timer" role="button" aria-label="Ayuda">?</span><span id="tdisp">3:00</span>
+  <button class="go" id="tstart">Iniciar</button>
+  <button id="t90">90s</button>
+  <button id="t120">2m</button>
+  <button id="t180">3m</button>
+</div>
+
+<script>
+/* ------- Datos del programa ------- */
+const DAYS = [
+ {name:"Día 1 · Fuerza", short:"FUERZA", sub:"Lunes · Neural", meta:["4–6 reps","RPE 8–9 básicos","Desc. 3–4 min","~75 min"],
+  ex:[
+   {n:"Sentadilla trasera con barra", s:"4 × 4–6 · RPE 8–9", sets:4, tip:"2–3 series de aproximación al 50–70% antes de la primera serie efectiva. Fallo técnico solo en la última."},
+   {n:"Peso muerto convencional", s:"3 × 5–6 · RPE 7–8", sets:3, tip:"Va moderado porque la sentadilla ya cargó la lumbar. Calidad sobre carga."},
+   {n:"Press banca plano con barra", s:"4 × 4–6 · RPE 8–9", sets:4, tip:"Series de aproximación obligatorias. Escápulas retraídas, pies firmes."},
+   {n:"Dominadas lastradas", s:"4 × 4–6 · RPE 8", sets:4, tip:"Rango completo: extensión total abajo, pecho a la barra arriba."},
+   {n:"Press militar de pie con barra", s:"3 × 5–6 · RPE 8", sets:3, tip:"Glúteos y abdomen apretados; no conviertas el press en un push press."},
+   {n:"Curl femoral sentado", s:"3 × 8–10 · RPE 8", sets:3, tip:"Excéntrico de 2–3 s. Isquios en frecuencia 3x esta semana."},
+   {n:"Elevaciones laterales con mancuernas", s:"3 × 10–12 · RPE 8", sets:3, tip:"Hoy pesadas y estrictas; el viernes van ligeras a 15–20."}
+  ]},
+ {name:"Día 2 · Hipertrofia", short:"HIPERTROFIA", sub:"Miércoles · Mecánico", meta:["8–12 reps","RPE 7–8","Desc. 90 s–2 min","~80 min"],
+  ex:[
+   {n:"Prensa inclinada", s:"4 × 8–10 · RPE 8", sets:4, tip:"Profundidad completa sin despegar la cadera del respaldo."},
+   {n:"Press inclinado con mancuernas", s:"4 × 8–12 · RPE 8", sets:4, tip:"Excéntrico de 2–3 s. La fase negativa es el estímulo principal."},
+   {n:"Remo con barra", s:"4 × 8–10 · RPE 8", sets:4, tip:"Torso 30–45°, sin impulso lumbar. Excéntrico controlado."},
+   {n:"Peso muerto rumano", s:"4 × 8–10 · RPE 8", sets:4, tip:"Cadera atrás, barra pegada a las piernas, estiramiento profundo de isquios."},
+   {n:"Press Arnold sentado", s:"3 × 10–12 · RPE 7", sets:3, tip:"Rotación fluida; no lo conviertas en press militar con giro brusco."},
+   {n:"Jalón en polea agarre supino", s:"3 × 10–12 · RPE 8", sets:3, tip:"Codos hacia las costillas, pecho arriba, pausa de 1 s abajo."},
+   {n:"Elevaciones laterales en polea", s:"3 × 12–15 · RPE 8", sets:3, tip:"Unilateral. La polea da tensión constante donde la mancuerna no aporta."},
+   {n:"Curl inclinado con mancuernas", s:"3 × 10–12 · RPE 7", sets:3, tip:"Banco a 45–60°: bíceps en estiramiento máximo. Codo fijo."},
+   {n:"Face pull en polea", s:"3 × 12–15 · RPE 7", sets:3, tip:"Cable a la altura de los ojos, codos abiertos, rotación externa final. No lo omitas."},
+   {n:"Elevación de gemelos sentado", s:"4 × 10–12 · RPE 8", sets:4, tip:"Rodilla flexionada = sóleo. Pausa 1 s arriba, estiramiento completo abajo."}
+  ]},
+ {name:"Día 3 · Volumen", short:"VOLUMEN", sub:"Viernes · Metabólico", meta:["12–20 reps","RPE 7–8","Desc. 60–90 s","~80 min"],
+  ex:[
+   {n:"Hack squat", s:"4 × 12–15 · RPE 7–8", sets:4, tip:"Alternativa: Goblet pesada o prensa horizontal. Quema intensa = normal."},
+   {n:"Cruce en polea", s:"3 × 12–15 · RPE 7", sets:3, tip:"Squeeze de 1 s al centro; no dejes que el peso te jale en la apertura."},
+   {n:"Jalón al pecho agarre ancho", s:"4 × 12–15 · RPE 7–8", sets:4, tip:"Descansos cortos: 60–90 s. Busca la congestión, no el récord."},
+   {n:"Curl femoral tumbado", s:"4 × 10–12 · RPE 8", sets:4, tip:"Excéntrico de 3 s, cadera pegada al banco todo el rango."},
+   {n:"Fondos en paralelas", s:"3 × 12–15 · RPE 7–8", sets:3, tip:"Ligera inclinación adelante para pecho; vertical para más tríceps."},
+   {n:"Elevaciones de gemelos de pie", s:"4 × 15–20 · RPE 8", sets:4, tip:"Pausa de 1 s arriba, sin rebote abajo — sin eso el tendón hace el trabajo."},
+   {n:"Elevaciones laterales con mancuernas", s:"3 × 15–20 · RPE 8", sets:3, tip:"Ligeras y estrictas. Tercer estímulo de lateral en la semana."},
+   {n:"Superserie: Curl predicador + Ext. tríceps sobre cabeza", s:"3+3 × 12–15 · RPE 7", sets:3, tip:"Espalda con espalda, 45 s entre pares. La última serie de cada uno puede ir al fallo."},
+   {n:"Encogimientos con mancuernas", s:"2 × 12–15 · RPE 7", sets:2, tip:"Pausa arriba de 1 s. El trapecio ya recibió mucho de PM, remos y dominadas."}
+  ]}
+];
+const PHASES = w => w===6||w===12 ? {n:"Deload", d:true} : w<=5 ? {n:"Acumulación", d:false} : w<=10 ? {n:"Intensificación", d:false} : {n:"Realización", d:false};
+
+const VOL = [["Cuádriceps",12,16],["Isquiosurales",11,14],["Pecho",11,16],["Espalda",15,18],["Delt. lateral",9,14],["Bíceps",9,14],["Tríceps",9,14],["Gemelos",8,14],["Trapecio",2,6]];
+
+/* ------- Estado / almacenamiento ------- */
+let mem = {};
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return mem[k]??null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){ mem[k]=v; } }
+};
+let state = JSON.parse(store.get("dup12") || "{}");   // {logs:{"w-d-e-s":{kg,reps}}, done:{"w-d-e":1}}
+state.logs = state.logs||{}; state.done = state.done||{}; state.bw = state.bw||{}; state.notes = state.notes||{};
+const save = () => store.set("dup12", JSON.stringify(state));
+
+let curWeek = parseInt(store.get("dup12_wk")||"1");
+let curDay = 0;
+
+/* ------- Render semana ------- */
+const weekbar = document.getElementById("weekbar");
+function renderWeeks(){
+  weekbar.innerHTML = "";
+  for(let w=1; w<=12; w++){
+    const ph = PHASES(w);
+    const el = document.createElement("div");
+    el.className = "wk" + (ph.d?" deload":"") + (w===curWeek?" active":"");
+    const doneCount = [0,1,2].filter(d=>DAYS[d].ex.every((_,i)=>state.done[`${w}-${d}-${i}`])).length;
+    if(doneCount===3) el.classList.add("done");
+    el.innerHTML = `<small>${ph.d?"DELOAD":"SEM"}</small><b>${w}</b>`;
+    el.onclick = ()=>{ curWeek=w; store.set("dup12_wk",String(w)); renderWeeks(); renderDay(); renderStats(); renderNote(); drawChart(); };
+    weekbar.appendChild(el);
+  }
+  const ph = PHASES(curWeek);
+  document.getElementById("phaseName").textContent = ph.n;
+  document.getElementById("phaseTag").innerHTML = ph.d ? '<span class="tagd">Carga −15% · Volumen 60%</span>' :
+    (curWeek>=7&&curWeek<=10 ? 'Día 1: 3–5 reps · Día 2: +1 serie en básicos' : curWeek===11 ? 'Semana de récords · RPE 9 máx' : 'Doble progresión activa');
+}
+
+/* ------- Render tabs ------- */
+const tabs = document.getElementById("tabs");
+DAYS.forEach((d,i)=>{
+  const t = document.createElement("div");
+  t.className = "tab"+(i===0?" active":"");
+  t.innerHTML = `<h3>${d.short}</h3><p>${d.sub}</p>`;
+  t.onclick = ()=>{ curDay=i; document.querySelectorAll(".tab").forEach((x,j)=>x.classList.toggle("active",j===i)); renderDay(); renderNote(); };
+  tabs.appendChild(t);
+});
+
+/* ------- Render sesión ------- */
+function prevLog(w,d,e){
+  for(let pw=w-1; pw>=1; pw--){
+    const l = state.logs[`${pw}-${d}-${e}-0`];
+    if(l && l.kg) return {w:pw, ...l};
+  }
+  return null;
+}
+function renderDay(){
+  const d = DAYS[curDay], ph = PHASES(curWeek);
+  document.getElementById("deloadNote").style.display = ph.d ? "block":"none";
+  document.getElementById("meta").innerHTML = d.meta.map(m=>`<span class="chip">${m}</span>`).join("") +
+    `<span class="chip">Semana <b>${curWeek}</b> · <b>${ph.n}</b></span>`;
+  const list = document.getElementById("exlist");
+  list.innerHTML = "";
+  // Orden: pendientes primero (en su orden original), completados al final
+  const order = d.ex.map((ex,ei)=>({ex,ei}));
+  const pending = order.filter(o=>!state.done[`${curWeek}-${curDay}-${o.ei}`]);
+  const doneArr = order.filter(o=> state.done[`${curWeek}-${curDay}-${o.ei}`]);
+  // Progreso de sesión
+  const spFill = document.getElementById("spFill"), spText = document.getElementById("spText");
+  spText.textContent = `${doneArr.length}/${d.ex.length}`;
+  spFill.style.width = (doneArr.length/d.ex.length*100)+"%";
+  spFill.classList.toggle("full", doneArr.length===d.ex.length);
+  let dividerPlaced = false;
+  [...pending, ...doneArr].forEach(({ex,ei}, renderIdx)=>{
+    if(!dividerPlaced && renderIdx===pending.length && doneArr.length){
+      const dv = document.createElement("div");
+      dv.className = "done-divider"; dv.textContent = "Completados";
+      list.appendChild(dv); dividerPlaced = true;
+    }
+    const key = `${curWeek}-${curDay}-${ei}`;
+    const isDone = !!state.done[key];
+    const card = document.createElement("div");
+    card.className = "ex"+(isDone?" done":"");
+    const prev = prevLog(curWeek,curDay,ei);
+    let scheme = ex.s;
+    if(ph.d) scheme = ex.s.replace(/RPE [0-9–\-\.]+/,"RPE ≤6") + " · −15% carga";
+    let rows = "";
+    const nSets = ph.d ? Math.max(2, ex.sets-1) : ex.sets;
+    for(let s=0;s<nSets;s++){
+      const lk = `${key}-${s}`, l = state.logs[lk]||{};
+      const sug = ph.d && prev ? ` placeholder="${Math.round(prev.kg*0.85*2)/2}"` : (prev?` placeholder="${prev.kg}"`:"");
+      rows += `<div class="log-row">
+        <label>S${s+1}${s===0?Q("serie"):""}</label>
+        <input type="number" inputmode="decimal" step="0.5" min="0" data-k="${lk}" data-f="kg" value="${l.kg??""}"${sug} aria-label="kg serie ${s+1}">
+        <input type="number" inputmode="numeric" step="1" min="0" data-k="${lk}" data-f="reps" value="${l.reps??""}" placeholder="reps" aria-label="reps serie ${s+1}">
+        <label>kg×rep${s===0?Q("kgrep"):""}</label>
+      </div>`;
+    }
+    card.innerHTML = `
+      <div class="ex-head">
+        <span class="ex-num">${ei+1}</span>
+        <div class="ex-title"><h4>${ex.n}</h4><p>${scheme} ${Q("rpe")}</p></div>
+        <div class="ex-check">✓</div>
+      </div>
+      <div class="ex-body">
+        ${prev?`<p class="prev">Última vez (sem ${prev.w}): ${prev.kg} kg × ${prev.reps||"—"} reps ${Q("ultimavez")}</p>`:""}
+        ${(()=>{const sg=loadSuggestion(curWeek,curDay,ei); return sg?`<p class="sug${sg.up?'':' hold'}">${sg.up?'⬆︎ ':'→ '}${sg.txt}</p>`:'';})()}
+        ${rows}
+        <p class="log-hint">Anota la carga y reps de cada serie efectiva.</p>
+        <p class="tip">${ex.tip}</p>
+      </div>`;
+    card.querySelector(".ex-head").onclick = (e)=>{
+      if(e.target.classList.contains("ex-check")){
+        state.done[key] = state.done[key]?0:1; save();
+        const allDone = DAYS[curDay].ex.every((_,i)=>state.done[`${curWeek}-${curDay}-${i}`]);
+        renderWeeks(); renderDay();
+        if(allDone && state.done[key]){
+          const t = document.getElementById("toast");
+          t.classList.remove("show"); void t.offsetWidth; t.classList.add("show");
+          if(navigator.vibrate) navigator.vibrate([80,40,80]);
+          setTimeout(()=>t.classList.remove("show"), 2600);
+        }
+        return;
+      }
+      card.classList.toggle("open");
+    };
+    card.querySelectorAll("input").forEach(inp=>{
+      inp.onclick = e=>e.stopPropagation();
+      inp.oninput = ()=>{
+        const k = inp.dataset.k;
+        state.logs[k] = state.logs[k]||{};
+        state.logs[k][inp.dataset.f] = parseFloat(inp.value)||"";
+        save(); if(typeof drawChart==="function") drawChart();
+      };
+      inp.onblur = ()=>{
+        const k = inp.dataset.k, l = state.logs[k];
+        if(l && l.kg && l.reps && inp.dataset.f==="reps"){
+          const rest = curDay===0 ? (ei<=2?180:ei<=4?120:90) : curDay===1 ? (ei<=3?120:90) : 75;
+          if(typeof autoRest==="function") autoRest(rest);
+        }
+      };
+    });
+    list.appendChild(card);
+  });
+}
+
+/* ------- Volumen ------- */
+document.getElementById("volbars").innerHTML = VOL.map(([n,v,max])=>{
+  const pct = Math.min(100, v/max*100);
+  return `<div class="bar-wrap"><div class="bar-label"><span>${n}</span><span>${v} series / obj. ≤${max}</span></div>
+  <div class="bar"><i class="${v>=8?'good':''}" data-w="${pct}"></i></div></div>`;
+}).join("");
+new IntersectionObserver((es,obs)=>{
+  es.forEach(e=>{ if(e.isIntersecting){
+    e.target.querySelectorAll(".bar i").forEach((b,i)=>setTimeout(()=>b.style.width=b.dataset.w+"%", i*70));
+    obs.unobserve(e.target);
+  }});
+},{threshold:.3}).observe(document.getElementById("volbars"));
+
+/* ------- Timer ------- */
+let tSec = 180, tRun = null;
+const tdisp = document.getElementById("tdisp");
+function tShow(){ const m=Math.floor(tSec/60), s=tSec%60; tdisp.textContent = `${m}:${String(s).padStart(2,"0")}`; tdisp.classList.toggle("low", tSec<=10); }
+function tSet(s){ clearInterval(tRun); tRun=null; tSec=s; tShow(); document.getElementById("tstart").textContent="Iniciar"; }
+function autoRest(sec){
+  tSet(sec);
+  document.getElementById("tstart").click();
+  showNotif && showNotif(`Descanso: ${sec>=120?(sec/60)+" min":sec+" s"} — arrancó solo ⏱️`);
+}
+document.getElementById("t90").onclick = ()=>tSet(90);
+document.getElementById("t120").onclick = ()=>tSet(120);
+document.getElementById("t180").onclick = ()=>tSet(180);
+document.getElementById("tstart").onclick = function(){
+  if(tRun){ tSet(tSec); return; }
+  this.textContent = "Pausar";
+  tRun = setInterval(()=>{
+    tSec--; tShow();
+    if(tSec<=0){
+      clearInterval(tRun); tRun=null; this.textContent="Iniciar"; tSec=0; tShow();
+      try{ const a=new (window.AudioContext||window.webkitAudioContext)(); const o=a.createOscillator(); const g=a.createGain();
+        o.connect(g); g.connect(a.destination); o.frequency.value=880; g.gain.value=.2; o.start(); setTimeout(()=>{o.stop();a.close();},450);}catch(e){}
+      if(navigator.vibrate) navigator.vibrate([200,100,200]);
+    }
+  },1000);
+};
+
+/* ------- Export ------- */
+document.getElementById("exportBtn").onclick = ()=>{
+  const blob = new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "registro_dup_diego_diaz.json";
+  a.click();
+};
+
+/* ------- Ayuda contextual ------- */
+const HELP = {
+  serie: ["Serie (S1, S2...)", "Cada serie efectiva del ejercicio. S1 es la primera serie de trabajo (las de calentamiento/aproximación no se anotan). Escribe los kilos que usaste y las repeticiones que completaste."],
+  kgrep: ["kg × rep", "El primer campo es la carga en kilogramos y el segundo las repeticiones completadas en esa serie. Ejemplo: 100 y 5 = hiciste 5 repeticiones con 100 kg."],
+  rpe: ["RPE", "Esfuerzo percibido del 1 al 10. RPE 8 = podías hacer ~2 reps más. RPE 9 = solo 1 más. RPE 10 = fallo absoluto. Es tu regulador de intensidad diario."],
+  ultimavez: ["Última vez", "Tu mejor primera serie registrada de este ejercicio en semanas anteriores. Úsala como referencia: iguala o supera esa marca para aplicar la doble progresión."],
+  e1rm: ["e1RM estimado", "Tu repetición máxima estimada, calculada con la fórmula de Epley: carga × (1 + reps/30). No necesitas probar tu 1RM real — la gráfica sube si te haces más fuerte, aunque nunca levantes al máximo."],
+  adherencia: ["Adherencia", "Porcentaje de sesiones completadas de las 36 del mesociclo (12 semanas × 3 días). Marca el círculo ✓ de cada ejercicio al terminarlo; cuando completas los 3 días, la semana se marca en verde."],
+  peso: ["Peso corporal", "Pésate 1 vez por semana, mismo día, en ayunas. En volumen buscas +0.2 a +0.4 kg/semana; más rápido suele ser grasa, estancado significa que faltan calorías."],
+  deltapeso: ["Cambio de peso", "Diferencia entre tu primer y último registro de peso corporal. Te dice si el superávit calórico está funcionando a lo largo del mesociclo."],
+  timer: ["Timer de descanso", "Cronómetro para respetar los descansos del programa: 3 min para básicos pesados del Día 1, 2 min para accesorios grandes, 90 s para el resto. Suena y vibra al llegar a cero."],
+  notas: ["Notas de sesión", "Registra energía, molestias o ajustes ('hombro molestó en militar', 'dormí 5 h'). Estos datos explican las semanas malas y justifican sustituciones de ejercicio."],
+  volumen: ["Volumen semanal", "Series efectivas que recibe cada músculo por semana sumando los 3 días. La barra verde indica que estás dentro del rango productivo para avanzados (10–20 series)."]
+};
+const pop = document.getElementById("helpPop");
+function showHelp(key, x, y){
+  const h = HELP[key]; if(!h) return;
+  document.getElementById("hpT").textContent = h[0];
+  document.getElementById("hpB").textContent = h[1];
+  pop.style.display = "block";
+  const pw = Math.min(280, window.innerWidth-24);
+  pop.style.maxWidth = pw+"px";
+  let left = Math.min(Math.max(8, x-40), window.innerWidth-pw-8);
+  pop.style.left = left+"px";
+  pop.style.top = Math.min(y+14, window.innerHeight-160)+"px";
+}
+document.addEventListener("click", e=>{
+  const h = e.target.closest(".help");
+  if(h){ e.stopPropagation(); showHelp(h.dataset.h, e.clientX, e.clientY); return; }
+  if(!e.target.closest("#helpPop")) pop.style.display = "none";
+});
+pop.querySelector(".close").onclick = ()=> pop.style.display = "none";
+const Q = key => `<span class="help" data-h="${key}" role="button" aria-label="Ayuda">?</span>`;
+
+
+/* ------- Tema claro/oscuro ------- */
+const themeBtn = document.getElementById("themeBtn");
+function applyTheme(t){
+  document.body.dataset.theme = t;
+  themeBtn.textContent = t === "light" ? "☀︎" : "☾";
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.content = t === "light" ? "#F2F2F7" : "#000000";
+  if(typeof drawChart === "function") setTimeout(drawChart, 50);
+}
+let theme = store.get("dup12_theme");
+if(!theme){
+  theme = (window.matchMedia && matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark";
+}
+applyTheme(theme);
+themeBtn.onclick = ()=>{
+  themeBtn.classList.add("spin");
+  setTimeout(()=>themeBtn.classList.remove("spin"), 380);
+  theme = document.body.dataset.theme === "light" ? "dark" : "light";
+  store.set("dup12_theme", theme);
+  applyTheme(theme);
+};
+
+
+
+/* ------- Navegación por apartados ------- */
+document.querySelectorAll(".tb").forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll(".tb").forEach(b=>b.classList.toggle("active", b===btn));
+    document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active", v.id==="view-"+btn.dataset.v));
+    document.body.classList.toggle("hide-timer", btn.dataset.v!=="entrenar");
+    window.scrollTo({top:0});
+    if(btn.dataset.v==="progreso"){
+      renderStats(); drawChart();
+      document.querySelectorAll("#volbars .bar i").forEach((b,i)=>setTimeout(()=>b.style.width=b.dataset.w+"%", 150+i*60));
+    }
+  };
+});
+
+/* ------- Notificaciones motivacionales ------- */
+const FRASES = [
+  "La barra no sabe de excusas. Tú tampoco deberías.",
+  "Serie a serie se construye lo que nadie te puede quitar.",
+  "El de hace 3 meses no aguantaba lo que tú aguantas hoy.",
+  "Disciplina es entrenar también los días que no quieres.",
+  "Nadie va a levantar esto por ti. Esa es la mejor parte.",
+  "RPE 8 real. Sin mentirte, que la bitácora no perdona.",
+  "El descanso también es parte de la serie. Respira.",
+  "Cada kilo registrado es un dato. Cada dato es progreso.",
+  "No busques motivación. Busca la siguiente serie.",
+  "Tu único rival está en la columna de la semana pasada.",
+  "Hoy pesado, mañana normal. Así se construye.",
+  "La técnica primero. El ego se queda en la entrada.",
+  "12 semanas. Un plan. Cero improvisación.",
+  "Los músculos tercos ceden ante la constancia terca.",
+  "Lo que se mide, mejora. Lo que se registra, no se olvida.",
+  "El deload no es debilidad, es estrategia.",
+  "Fuerte no es el que nunca falla, es el que vuelve el lunes.",
+  "Última serie: ahí es donde vives.",
+  "Come, duerme, levanta, registra. Repite.",
+  "Tu e1RM de la semana 12 se decide hoy."
+];
+const notifEl = document.getElementById("notif");
+let notifTimer = null;
+function showNotif(msg){
+  notifEl.querySelector(".n-msg").textContent = msg;
+  notifEl.classList.remove("hide"); notifEl.classList.add("show");
+  if(navigator.vibrate) navigator.vibrate(60);
+  clearTimeout(notifTimer);
+  notifTimer = setTimeout(hideNotif, 5000);
+}
+function hideNotif(){
+  if(!notifEl.classList.contains("show")) return;
+  notifEl.classList.add("hide");
+  setTimeout(()=>{ notifEl.classList.remove("show","hide"); }, 320);
+}
+notifEl.onclick = hideNotif;
+function maybeNotif(prob){
+  const last = parseInt(store.get("dup12_lastnotif")||"0");
+  if(Date.now() - last < 20*60*1000) return;           // máx 1 cada 20 min
+  if(Math.random() > prob) return;
+  const used = JSON.parse(store.get("dup12_usedfrases")||"[]");
+  let pool = FRASES.map((_,i)=>i).filter(i=>!used.includes(i));
+  if(!pool.length){ pool = FRASES.map((_,i)=>i); used.length = 0; }
+  const pick = pool[Math.floor(Math.random()*pool.length)];
+  used.push(pick);
+  store.set("dup12_usedfrases", JSON.stringify(used));
+  store.set("dup12_lastnotif", String(Date.now()));
+  setTimeout(()=>showNotif(FRASES[pick]), 900);
+}
+maybeNotif(0.35);                                       // 35% al abrir la app
+setInterval(()=>maybeNotif(0.25), 12*60*1000);          // chance cada 12 min en sesión
+
+/* ------- Sugerencia de carga (doble progresión automática) ------- */
+function loadSuggestion(w, d, e){
+  // Busca la última semana con registros de este ejercicio
+  for(let pw=w-1; pw>=1; pw--){
+    const sets = [];
+    for(let s=0; s<DAYS[d].ex[e].sets; s++){
+      const l = state.logs[`${pw}-${d}-${e}-${s}`];
+      if(l && l.kg && l.reps) sets.push(l);
+    }
+    if(!sets.length) continue;
+    const kg = Math.max(...sets.map(x=>x.kg));
+    const rango = (DAYS[d].ex[e].s.match(/(\d+)[–\-](\d+)/)||[]);
+    const topRange = parseInt(rango[2]||0);
+    if(!topRange) return null;
+    const allTop = sets.every(x=>x.reps >= topRange) && sets.length >= DAYS[d].ex[e].sets - 1;
+    const inc = d===0 || /Prensa|Hack|muerto|femoral|gemelo/i.test(DAYS[d].ex[e].n) ? 5 : 2.5;
+    if(allTop) return {txt:`Sube a ${kg+inc} kg — completaste el tope del rango la última vez`, up:true};
+    return {txt:`Mantén ${kg} kg y busca superar tus reps de la última vez`, up:false};
+  }
+  return null;
+}
+
+/* ------- Saludo ------- */
+(function(){
+  const h = new Date().getHours();
+  const s = h<12?"Buenos días":h<19?"Buenas tardes":"Buenas noches";
+  const day = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"][new Date().getDay()];
+  const hint = day==="lunes"?"hoy toca Fuerza":day==="miércoles"?"hoy toca Hipertrofia":day==="viernes"?"hoy toca Volumen":"día de descanso — recuperar también es entrenar";
+  document.getElementById("greet").textContent = `${s}, Diego — ${hint}.`;
+})();
+
+/* ------- Peso corporal + adherencia ------- */
+function renderStats(){
+  document.getElementById("bwWeek").textContent = curWeek;
+  const inp = document.getElementById("bwInput");
+  inp.value = state.bw[curWeek]??"";
+  const weeks = Object.keys(state.bw).map(Number).sort((a,b)=>a-b);
+  const delta = document.getElementById("bwDelta");
+  if(weeks.length>=2){
+    const d = (state.bw[weeks[weeks.length-1]] - state.bw[weeks[0]]).toFixed(1);
+    delta.textContent = (d>0?"+":"")+d+" kg";
+    delta.style.color = "var(--ok)";
+  } else delta.textContent = "—";
+  let done=0;
+  for(let w=1;w<=12;w++) for(let d=0;d<3;d++)
+    if(DAYS[d].ex.every((_,i)=>state.done[`${w}-${d}-${i}`])) done++;
+  document.getElementById("adhD").textContent = done;
+  document.getElementById("adh").textContent = Math.round(done/36*100)+"%";
+}
+document.getElementById("bwInput").oninput = function(){
+  const v = parseFloat(this.value);
+  if(v) state.bw[curWeek]=v; else delete state.bw[curWeek];
+  save(); renderStats();
+};
+
+/* ------- Notas de sesión ------- */
+const noteEl = document.getElementById("sesNote");
+function renderNote(){ noteEl.value = state.notes[`${curWeek}-${curDay}`]||""; }
+noteEl.oninput = ()=>{ state.notes[`${curWeek}-${curDay}`] = noteEl.value; save(); };
+
+/* ------- Gráfica e1RM ------- */
+function bestE1RM(w, d, e){
+  let best = 0;
+  const nSets = DAYS[d].ex[e].sets;
+  for(let s=0;s<nSets;s++){
+    const l = state.logs[`${w}-${d}-${e}-${s}`];
+    if(l && l.kg && l.reps){ const v = l.kg*(1+l.reps/30); if(v>best) best=v; }
+  }
+  return best;
+}
+function drawChart(){
+  const [d,e] = document.getElementById("chartLift").value.split("-").map(Number);
+  const cv = document.getElementById("chart");
+  const W = cv.clientWidth, H = 150;
+  cv.width = W*2; cv.height = H*2;
+  const ctx = cv.getContext("2d"); ctx.scale(2,2); ctx.clearRect(0,0,W,H);
+  const pts = [];
+  for(let w=1;w<=12;w++){ const v = bestE1RM(w,d,e); if(v>0) pts.push([w,v]); }
+  const cs = getComputedStyle(document.body); const cSep = cs.getPropertyValue("--sep").trim()||"rgba(84,84,88,.5)"; const cLab = cs.getPropertyValue("--label2").trim()||"rgba(235,235,245,.5)"; const cRed = cs.getPropertyValue("--red").trim()||"#FF453A"; const cInk = cs.getPropertyValue("--label").trim()||"#FFF";
+  ctx.strokeStyle = cSep;
+  ctx.beginPath(); ctx.moveTo(30,H-22); ctx.lineTo(W-6,H-22); ctx.stroke();
+  ctx.fillStyle = cLab; ctx.font = "10px -apple-system,system-ui";
+  for(let w=1;w<=12;w++){
+    const x = 30 + (w-1)*(W-44)/11;
+    ctx.fillText(w, x-3, H-8);
+  }
+  if(!pts.length){
+    ctx.fillStyle = cLab; ctx.font = "13px -apple-system,system-ui";
+    ctx.fillText("Registra kg y reps para ver tu progresión aquí.", 34, H/2);
+    return;
+  }
+  const vals = pts.map(p=>p[1]);
+  const min = Math.min(...vals)*0.95, max = Math.max(...vals)*1.05;
+  const X = w => 30 + (w-1)*(W-44)/11;
+  const Y = v => (H-30) - (v-min)/(max-min||1)*(H-42);
+  ctx.strokeStyle = cRed; ctx.lineWidth = 2; ctx.beginPath();
+  pts.forEach(([w,v],i)=> i? ctx.lineTo(X(w),Y(v)) : ctx.moveTo(X(w),Y(v)));
+  ctx.stroke();
+  ctx.fillStyle = cRed;
+  pts.forEach(([w,v])=>{ ctx.beginPath(); ctx.arc(X(w),Y(v),3.5,0,7); ctx.fill(); });
+  ctx.fillStyle = cInk; ctx.font = "600 10px -apple-system,system-ui";
+  pts.forEach(([w,v])=> ctx.fillText(Math.round(v), X(w)-8, Y(v)-8));
+}
+document.getElementById("chartLift").onchange = drawChart;
+window.addEventListener("resize", drawChart);
+
+/* ------- Importar respaldo ------- */
+document.getElementById("importBtn").onclick = ()=>document.getElementById("importFile").click();
+document.getElementById("importFile").onchange = function(){
+  const f = this.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const data = JSON.parse(r.result);
+      if(!data.logs && !data.done) throw 0;
+      state = data; state.logs=state.logs||{}; state.done=state.done||{}; state.bw=state.bw||{}; state.notes=state.notes||{};
+      save(); renderWeeks(); renderDay(); renderStats(); renderNote(); drawChart();
+      alert("Respaldo importado correctamente.");
+    }catch(e){ alert("El archivo no es un respaldo válido."); }
+  };
+  r.readAsText(f);
+};
+
+renderWeeks(); renderDay(); renderStats(); renderNote(); drawChart(); tShow();
+if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
+</script>
+</body>
+</html>
