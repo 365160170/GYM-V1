@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="DUP Diego">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="theme-color" content="#000000">
-<title>Diego Díaz de León — Full Body DUP · v12</title>
+<title>Diego Díaz de León — Full Body DUP · v13</title>
 <style>
 :root{
   --bg:#000000; --card:#1C1C1E; --card2:#2C2C2E; --fill:#3A3A3C;
@@ -243,6 +243,49 @@ header.compact #gearBtn, header.compact #themeBtn{top:calc(6px + env(safe-area-i
 .action-btn .ab-t{font-size:13.5px;font-weight:700;color:var(--label)}
 .action-btn .ab-s{font-size:11px;color:var(--label3)}
 
+
+/* ===== Dashboard v13 ===== */
+.spark{margin-top:12px}
+.spark svg{display:block;width:100%;height:36px}
+.spark-label{font-size:11px;color:var(--label3);margin-top:2px}
+.meso-card{background:var(--card);border-radius:var(--r-lg);padding:16px;margin-bottom:14px}
+.meso-card h4{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between}
+.meso-card h4 span{color:var(--label3);font-weight:600;font-size:12px}
+.meso-track{display:flex;gap:4px}
+.meso-seg{flex:1;height:10px;border-radius:5px;background:var(--card2);position:relative}
+.meso-seg.past{background:var(--red)}
+.meso-seg.deload{background:rgba(48,209,88,.35)}
+.meso-seg.deload.past{background:var(--green)}
+.meso-seg.now{outline:2px solid var(--label);outline-offset:1.5px}
+.info-card{background:var(--card);border-radius:var(--r-lg);padding:16px;margin-bottom:14px}
+.info-card .ic-head{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--label3);margin-bottom:8px}
+.info-card .ic-main{font-size:15px;line-height:1.45}
+.info-card .ic-big{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:2px 0}
+.info-card .ic-sub{font-size:12.5px;color:var(--label2)}
+.insight-card{background:linear-gradient(135deg,rgba(255,69,58,.12),var(--card) 55%);border-radius:var(--r-lg);padding:16px;margin-bottom:14px}
+body[data-theme="light"] .insight-card{background:linear-gradient(135deg,rgba(255,59,48,.1),#fff 55%)}
+.livevol-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12.5px}
+.livevol-row .lv-name{width:92px;color:var(--label2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.livevol-row .lv-bar{flex:1;height:7px;background:var(--card2);border-radius:5px;overflow:hidden}
+.livevol-row .lv-bar i{display:block;height:100%;background:var(--red);border-radius:5px;transition:width .5s ease}
+.livevol-row .lv-bar i.ok{background:var(--green)}
+.livevol-row .lv-n{width:44px;text-align:right;color:var(--label3);font-variant-numeric:tabular-nums}
+/* Series personalizadas */
+.custom-form{display:grid;grid-template-columns:1fr 78px 92px;gap:8px;margin:14px 0 8px}
+.custom-form select,.custom-form input{background:var(--card2);border:none;border-radius:10px;color:var(--label);padding:11px 10px;font-size:14px;font-family:inherit}
+.custom-form button{background:var(--red);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.custom-form button:active{transform:scale(.96)}
+.custom-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:.5px solid var(--sep);font-size:14px}
+.custom-item .ci-del{background:none;border:none;color:var(--red);font-size:17px;cursor:pointer;padding:4px 8px}
+/* Desktop */
+@media(min-width:900px){
+  .wrap{max-width:1060px}
+  #view-hoy{columns:2;column-gap:14px}
+  #view-hoy>*{break-inside:avoid}
+  .today-date{column-span:all}
+  .stat-grid{grid-template-columns:1fr 1fr}
+}
+
 /* ===== Perfil en header ===== */
 .profile-row{display:flex;align-items:center;gap:11px;margin-bottom:14px;padding-right:96px}
 .avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#FF6B61,#C2262E);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;letter-spacing:.02em;flex:0 0 auto;box-shadow:0 3px 12px rgba(230,57,70,.35)}
@@ -375,7 +418,9 @@ body[data-theme="light"] #toast{color:#fff}
     <h2 class="hero-title" id="heroTitle"></h2>
     <p class="hero-sub" id="heroSub"></p>
     <button class="hero-cta" id="heroCta"></button>
+    <div class="spark" id="heroSpark" style="display:none"><svg viewBox="0 0 200 36" preserveAspectRatio="none"><polyline id="sparkLine" fill="none" stroke="#FF453A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><p class="spark-label" id="sparkLabel"></p></div>
   </div>
+  <div class="insight-card" id="insightCard"><div class="ic-head">💡 Insight de la semana</div><div class="ic-main" id="insightTxt"></div></div>
   <div class="ring-card">
     <div class="ring-wrap">
       <svg width="92" height="92" viewBox="0 0 92 92">
@@ -393,8 +438,13 @@ body[data-theme="light"] #toast{color:#fff}
     <div class="stat-card"><span class="sc-label">Racha</span><span class="sc-value" id="stStreak">0</span><span class="sc-sub">semanas completas seguidas</span></div>
     <div class="stat-card"><span class="sc-label">Adherencia</span><span class="sc-value" id="stAdh">0%</span><span class="sc-sub">del mesociclo</span></div>
     <div class="stat-card"><span class="sc-label">Peso actual</span><span class="sc-value" id="stBw">—</span><span class="sc-sub" id="stBwSub">registra en Progreso</span></div>
-    <div class="stat-card"><span class="sc-label">Próximo deload</span><span class="sc-value" id="stDeload">—</span><span class="sc-sub">semanas restantes</span></div>
+    <div class="stat-card"><span class="sc-label">Próximo deload</span><span class="sc-value" id="stDeload">—</span><span class="sc-sub" id="stDeloadSub">semanas restantes</span></div>
   </div>
+  <div class="meso-card"><h4>Mesociclo <span id="mesoLbl"></span></h4><div class="meso-track" id="mesoTrack"></div></div>
+  <div class="info-card" id="lastWkCard" style="display:none"><div class="ic-head">🕘 Último entrenamiento</div><div class="ic-big" id="lwTitle"></div><div class="ic-sub" id="lwSub"></div></div>
+  <div class="info-card" id="prCard" style="display:none"><div class="ic-head">🏆 Récord más reciente</div><div class="ic-big" id="prTitle"></div><div class="ic-sub" id="prSub"></div></div>
+  <div class="info-card"><div class="ic-head">🗣️ Coach del día</div><div class="ic-main" id="fraseDia" style="font-style:italic"></div></div>
+  <div class="info-card"><div class="ic-head">📊 Volumen de esta semana</div><div id="liveVol"></div></div>
 </div><!-- /view-hoy -->
 
 <div class="view" id="view-entrenar">
@@ -445,6 +495,16 @@ body[data-theme="light"] #toast{color:#fff}
   <section class="info">
     <h2>Volumen semanal por músculo <span class="help" data-h="volumen" role="button" aria-label="Ayuda">?</span></h2>
     <div id="volbars"></div>
+    <div class="prog-card" style="margin-top:12px">
+      <div class="ic-head" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--label3)">➕ Agregar series extra</div>
+      <div class="custom-form">
+        <select id="cfGroup"></select>
+        <input id="cfSets" type="number" inputmode="numeric" min="1" max="20" placeholder="Series">
+        <button id="cfAdd">Agregar</button>
+      </div>
+      <p style="font-size:12px;color:var(--label3);margin-bottom:4px">Si haces trabajo extra fuera del programa (ej. brazos o gemelos adicionales), agrégalo aquí y las barras de arriba lo suman.</p>
+      <div id="customList"></div>
+    </div>
   </section>
 
 </div><!-- /view-progreso -->
@@ -494,7 +554,7 @@ body[data-theme="light"] #toast{color:#fff}
     <details><summary>Señales de adelantar el deload</summary><div>Caída de rendimiento &gt;10% sin causa, dolor articular difuso, sueño perturbado + irritabilidad 3+ días, o pulso en reposo +7–10 bpm.</div></details>
   </section>
 
-  <p class="footer-note">Tu registro se guarda en este dispositivo/navegador. Exporta antes de borrar datos del navegador.<br><b style="color:var(--red)">Versión 12 — Excel + recordatorio mensual</b></p>
+  <p class="footer-note">Tu registro se guarda en este dispositivo/navegador. Exporta antes de borrar datos del navegador.<br><b style="color:var(--red)">Versión 13 — Dashboard Pro + series extra</b></p>
   <input type="file" id="importFile" accept=".json" style="display:none">
   <div class="btn-grid">
     <button class="action-btn" id="exportXlsBtn"><span class="ab-ic">📊</span><span class="ab-t">Exportar Excel</span><span class="ab-s">CSV para analizar</span></button>
@@ -520,7 +580,7 @@ body[data-theme="light"] #toast{color:#fff}
   <div class="sheet-row"><span class="sr-label"><span class="sr-ic">📊</span>Exportar a Excel</span><button class="sheet-btn" id="shXls">Exportar</button></div>
   <div class="sheet-row"><span class="sr-label"><span class="sr-ic">📤</span>Respaldo de datos</span><button class="sheet-btn" id="shExport">Exportar</button></div>
   <div class="sheet-row"><span class="sr-label"><span class="sr-ic">📥</span>Restaurar respaldo</span><button class="sheet-btn" id="shImport">Importar</button></div>
-  <div class="sheet-row"><span class="sr-label"><span class="sr-ic">🏷️</span>Versión</span><span style="color:var(--label3)">v12 · Excel + recordatorios</span></div>
+  <div class="sheet-row"><span class="sr-label"><span class="sr-ic">🏷️</span>Versión</span><span style="color:var(--label3)">v13 · Dashboard Pro</span></div>
 </div>
 
 <nav class="tabbar">
@@ -724,17 +784,7 @@ function renderDay(){
 }
 
 /* ------- Volumen ------- */
-document.getElementById("volbars").innerHTML = VOL.map(([n,v,max])=>{
-  const pct = Math.min(100, v/max*100);
-  return `<div class="bar-wrap"><div class="bar-label"><span>${n}</span><span>${v} series / obj. ≤${max}</span></div>
-  <div class="bar"><i class="${v>=8?'good':''}" data-w="${pct}"></i></div></div>`;
-}).join("");
-new IntersectionObserver((es,obs)=>{
-  es.forEach(e=>{ if(e.isIntersecting){
-    e.target.querySelectorAll(".bar i").forEach((b,i)=>setTimeout(()=>b.style.width=b.dataset.w+"%", i*70));
-    obs.unobserve(e.target);
-  }});
-},{threshold:.3}).observe(document.getElementById("volbars"));
+renderVolBars(); renderCustom();
 
 /* ------- Timer ------- */
 let tSec = 180, tRun = null;
@@ -833,6 +883,167 @@ themeBtn.onclick = ()=>{
 
 
 
+
+
+/* ------- v13: volumen dinámico + series personalizadas ------- */
+state.custom = state.custom || [];   // [{g, sets}]
+const VOL_BASE = {"Cuádriceps":[12,16],"Isquiosurales":[11,14],"Pecho":[11,16],"Espalda":[15,18],"Delt. lateral":[9,14],"Bíceps":[9,14],"Tríceps":[9,14],"Gemelos":[8,14],"Trapecio":[2,6]};
+function customFor(g){ return state.custom.filter(c=>c.g===g).reduce((a,c)=>a+Number(c.sets||0),0); }
+function renderVolBars(){
+  const el = document.getElementById("volbars");
+  el.innerHTML = Object.entries(VOL_BASE).map(([n,[v,max]])=>{
+    const extra = customFor(n), total = v + extra;
+    const pct = Math.min(100, total/max*100);
+    return `<div class="bar-wrap"><div class="bar-label"><span>${n}${extra?` <b style="color:var(--red)">+${extra}</b>`:""}</span><span>${total} series / obj. ≤${max}</span></div>
+    <div class="bar"><i class="${total>=8?'good':''}" data-w="${pct}" style="width:${pct}%"></i></div></div>`;
+  }).join("");
+}
+function renderCustom(){
+  const sel = document.getElementById("cfGroup");
+  if(sel && !sel.options.length) sel.innerHTML = Object.keys(VOL_BASE).map(g=>`<option>${g}</option>`).join("");
+  const list = document.getElementById("customList");
+  if(!list) return;
+  list.innerHTML = state.custom.map((c,i)=>`<div class="custom-item"><span>${c.g} — <b>+${c.sets} series</b>/sem</span><button class="ci-del" data-i="${i}">✕</button></div>`).join("");
+  list.querySelectorAll(".ci-del").forEach(b=>b.onclick=()=>{ state.custom.splice(+b.dataset.i,1); save(); renderCustom(); renderVolBars(); });
+}
+const _cfAdd = document.getElementById("cfAdd");
+if(_cfAdd) _cfAdd.onclick = ()=>{
+  const g = document.getElementById("cfGroup").value;
+  const s = parseInt(document.getElementById("cfSets").value);
+  if(!g || !s || s<1) return;
+  state.custom.push({g, sets:s}); save();
+  document.getElementById("cfSets").value = "";
+  renderCustom(); renderVolBars();
+  showNotif(`➕ ${g}: +${s} series/semana agregadas`);
+};
+
+/* ------- v13: mapeo ejercicio → grupo (volumen vivo) ------- */
+function groupOf(name){
+  if(/Sentadilla|Prensa|Hack|Goblet|Extensión de pierna/i.test(name)) return "Cuádriceps";
+  if(/rumano|femoral|Buenos días|muerto/i.test(name)) return "Isquiosurales";
+  if(/banca|inclinado con manc|Cruce|Fondos|convergente|Aperturas/i.test(name)) return "Pecho";
+  if(/Dominadas|Remo|Jalón/i.test(name)) return "Espalda";
+  if(/laterales/i.test(name)) return "Delt. lateral";
+  if(/Curl (inclinado|predicador|martillo|bayes)/i.test(name)) return "Bíceps";
+  if(/tríceps|cerrado/i.test(name)) return "Tríceps";
+  if(/gemelos/i.test(name)) return "Gemelos";
+  if(/Encogimientos/i.test(name)) return "Trapecio";
+  if(/militar|Arnold/i.test(name)) return null; // press hombro cuenta poco a lateral
+  return null;
+}
+function renderLiveVol(){
+  const el = document.getElementById("liveVol"); if(!el) return;
+  const done = {}, plan = {};
+  [0,1,2].forEach(d=>DAYS[d].ex.forEach((ex,e)=>{
+    const g = groupOf(ex.n); if(!g) return;
+    plan[g] = (plan[g]||0) + ex.sets;
+    let logged = 0;
+    for(let s=0;s<ex.sets;s++){ const l=state.logs[`${curWeek}-${d}-${e}-${s}`]; if(l&&l.kg&&l.reps) logged++; }
+    if(!logged && state.done[`${curWeek}-${d}-${e}`]) logged = ex.sets;
+    done[g] = (done[g]||0) + logged;
+  }));
+  el.innerHTML = Object.keys(plan).map(g=>{
+    const p = plan[g], c = Math.min(done[g]||0, p);
+    return `<div class="livevol-row"><span class="lv-name">${g}</span><div class="lv-bar"><i class="${c>=p?'ok':''}" style="width:${p?c/p*100:0}%"></i></div><span class="lv-n">${c}/${p}</span></div>`;
+  }).join("");
+}
+
+/* ------- v13: piezas del dashboard ------- */
+function renderMesoBar(){
+  const t = document.getElementById("mesoTrack"); if(!t) return;
+  t.innerHTML = "";
+  for(let w=1;w<=12;w++){
+    const s = document.createElement("div");
+    s.className = "meso-seg" + ((w===6||w===12)?" deload":"") + (w<curWeek||weekDone(w)===3?" past":"") + (w===curWeek?" now":"");
+    t.appendChild(s);
+  }
+  document.getElementById("mesoLbl").textContent = `Semana ${curWeek} de 12`;
+}
+function lastWorkout(){
+  for(let w=12;w>=1;w--) for(let d=2;d>=0;d--){
+    let ton=0, sets=0, best=0, bestName="";
+    DAYS[d].ex.forEach((ex,e)=>{ for(let s=0;s<ex.sets;s++){
+      const l=state.logs[`${w}-${d}-${e}-${s}`];
+      if(l&&l.kg&&l.reps){ ton+=l.kg*l.reps; sets++; const e1=l.kg*(1+l.reps/30); if(e1>best){best=e1;bestName=ex.n;} }
+    }});
+    if(sets) return {w,d,ton,sets,best:Math.round(best),bestName};
+  }
+  return null;
+}
+function findPR(){
+  let latest = null;
+  [0,1,2].forEach(d=>DAYS[d].ex.forEach((ex,e)=>{
+    let max=0, maxW=0, prevMax=0;
+    for(let w=1;w<=12;w++){
+      const v = bestE1RM(w,d,e);
+      if(v>max){ prevMax=max; max=v; maxW=w; }
+    }
+    if(max>0 && (!latest || maxW>latest.w)) latest = {w:maxW, name:ex.n, e1:Math.round(max)};
+  }));
+  return latest;
+}
+function renderDashExtras(){
+  renderMesoBar(); renderLiveVol();
+  // Último entrenamiento
+  const lw = lastWorkout(), lwc = document.getElementById("lastWkCard");
+  if(lw && lwc){ lwc.style.display="block";
+    document.getElementById("lwTitle").textContent = `${Math.round(lw.ton).toLocaleString()} kg movidos`;
+    document.getElementById("lwSub").textContent = `${DAYS[lw.d].name} · Semana ${lw.w} · ${lw.sets} series · Mejor: ${lw.bestName} (${lw.best} kg e1RM)`;
+  }
+  // PR
+  const pr = findPR(), prc = document.getElementById("prCard");
+  if(pr && prc){ prc.style.display="block";
+    document.getElementById("prTitle").textContent = `${pr.name}`;
+    document.getElementById("prSub").textContent = `${pr.e1} kg e1RM · logrado en semana ${pr.w}`;
+  }
+  // Frase del día (determinística por fecha)
+  const doy = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 864e5);
+  document.getElementById("fraseDia").textContent = "“" + FRASES[doy % FRASES.length] + "”";
+  // Racha con fuego
+  const stEl = document.getElementById("stStreak");
+  const n = parseInt(stEl.textContent)||0;
+  stEl.textContent = n + (n>=9?" 🏆":n>=6?" ⚡️":n>=3?" 🔥":"");
+  // Deload contextual
+  const nd = curWeek<=6 ? 6-curWeek : curWeek<=12 ? 12-curWeek : 0;
+  const sub = document.getElementById("stDeloadSub");
+  if(sub) sub.textContent = nd===1 ? "última semana pesada — aprieta" : nd===0 ? "esta semana: −15% carga" : "semanas restantes";
+  // Insight
+  const tips = [];
+  if(nd===1) tips.push("Semana previa al deload: es el momento de empujar tus últimas progresiones antes de descargar.");
+  // Estancamiento en básicos del Día 1
+  for(let e=0;e<5;e++){
+    const tops=[];
+    for(let w=1;w<=curWeek;w++){ const v=bestE1RM(w,0,e); if(v>0) tops.push(v); }
+    if(tops.length>=3 && tops[tops.length-1]<=tops[tops.length-3]*1.005){
+      tips.push(`Tu ${DAYS[0].ex[e].n.toLowerCase()} lleva 3 registros sin subir e1RM — revisa la biblioteca y prueba una variante 2–3 semanas.`);
+      break;
+    }
+  }
+  const ws = Object.keys(state.bw).map(Number).sort((a,b)=>a-b);
+  if(ws.length>=3){
+    const rate = (state.bw[ws[ws.length-1]]-state.bw[ws[0]])/(ws[ws.length-1]-ws[0]);
+    if(rate>0.55) tips.push(`Tu peso sube ${rate.toFixed(1)} kg/semana — es rápido para volumen limpio; recorta ~150 kcal.`);
+    else if(rate>=0.15) tips.push(`Peso subiendo ${rate.toFixed(2)} kg/semana: superávit en el punto exacto. No cambies nada.`);
+    else if(rate<=0) tips.push("Tu peso no sube en las últimas semanas — si el objetivo es volumen, añade 150–200 kcal.");
+  }
+  let done36=0; for(let w=1;w<=12;w++) done36+=weekDone(w);
+  if(curWeek>=3 && done36/(curWeek*3) < 0.6) tips.push("La adherencia va por debajo del 60% — mejor 3 sesiones cortas garantizadas que planes perfectos a medias.");
+  document.getElementById("insightTxt").textContent = tips[0] || "Todo en orden: registra tus series y las recomendaciones aparecerán aquí conforme haya datos.";
+}
+function renderSpark(dayIdx){
+  const wrap = document.getElementById("heroSpark"); if(!wrap) return;
+  if(dayIdx===undefined){ wrap.style.display="none"; return; }
+  const pts=[];
+  for(let w=1;w<=12;w++){ const v=bestE1RM(w,dayIdx,0); if(v>0) pts.push(v); }
+  const last = pts.slice(-6);
+  if(last.length<2){ wrap.style.display="none"; return; }
+  wrap.style.display="block";
+  const min=Math.min(...last)*0.98, max=Math.max(...last)*1.02;
+  const line = last.map((v,i)=>`${(i/(last.length-1))*196+2},${34-((v-min)/(max-min||1))*30}`).join(" ");
+  document.getElementById("sparkLine").setAttribute("points", line);
+  const diff = Math.round(last[last.length-1]-last[0]);
+  document.getElementById("sparkLabel").textContent = `${DAYS[dayIdx].ex[0].n}: e1RM ${diff>=0?"+":""}${diff} kg en tus últimos registros`;
+}
 
 /* ------- Exportar a Excel (CSV) ------- */
 function exportExcel(){
@@ -1074,6 +1285,8 @@ function renderHoy(){
   // Próximo deload
   const nd = curWeek<=6 ? 6-curWeek : curWeek<=12 ? 12-curWeek : 0;
   document.getElementById("stDeload").textContent = nd===0 ? "¡Ahora!" : nd;
+  renderDashExtras();
+  renderSpark(typeof dayIdx!=="undefined"?dayIdx:undefined);
 }
 
 /* ------- Navegación refactorizada ------- */
@@ -1294,7 +1507,7 @@ document.getElementById("importFile").onchange = function(){
 };
 
 renderWeeks(); renderDay(); renderStats(); renderNote(); drawChart(); tShow();
-document.body.classList.add("hide-timer"); renderDayPicker(); renderTabLabels(); renderLibrary(); renderHoy(); syncSwitch();
+document.body.classList.add("hide-timer"); renderDayPicker(); renderTabLabels(); renderLibrary(); renderVolBars(); renderCustom(); renderHoy(); syncSwitch();
 if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
 </script>
 </body>
